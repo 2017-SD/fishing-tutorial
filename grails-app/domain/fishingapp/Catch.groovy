@@ -9,6 +9,7 @@ class Catch {
     Float xCoord
     Float yCoord
     Date dateCaught
+    String image
 
     static belongsTo = [user: User]
 
@@ -16,5 +17,6 @@ class Catch {
         tripName blank: false
         fishType blank: false
         dateCaught blank: false
+        image nullable: true, maxSize: 1024*1024*2
     }
 }

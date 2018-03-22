@@ -1,0 +1,26 @@
+#newCatchButton {
+    margin-top: 15px;
+}
+
+#showCatchesButton {
+    margin-top: 8px;
+}
+
+#showCatches {
+    display: none;
+}
+
+#newCatch {
+    display: none;
+}
+
+.tripModalButton {
+    margin-top: 9px;
+}
+
+.modal-dialog {
+    background-color:whitesmoke;
+    padding:10px 10px 10px 10px;
+    border-radius:5px;
+    text-align:center;
+}

@@ -19,3 +19,9 @@ if (typeof jQuery !== 'undefined') {
         });
     })(jQuery);
 }
+
+
+// listener for login anchor
+$('#loginBtn').click(function() {
+    $("#login").modal();
+});

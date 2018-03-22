@@ -8,72 +8,25 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <asset:javascript src="dropzone.js"/>
+    <asset:stylesheet src="main.css"/>
+    <asset:stylesheet src="bootstrap.css" />
+    <asset:stylesheet src="bootstrap-theme.css" />
+    <asset:javascript src="bootstrap.js" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
     <style>
-        #navMain {
-            background-color: #2597ec;
-            height: 60px;
-            width: 100%;
-            font-size: 15px;
-            color: #ffffff;
-            display: flex;
-            vertical-align: middle;
-        }
-
-        #mainLogoText {
-            color: #79b94c;
-            font-size: 24px;
-            font-weight: 500;
-            vertical-align: middle;
-            margin-top: 12px;
-
-        }
-
-        #mainLogo {
-            margin-left: 15px;
-            vertical-align: middle;
-        }
-
-        .loginBtn {
-            margin-top: 15px;
-            color: #79b94c;
-            text-align: right;
-            vertical-align: middle;
-            font-size: 20px;
-            margin-left:auto;
-            margin-right:15px;
-        }
-
-        #navUser {
-            background-color: #006dba;
-            text-align: center;
-            width: 100%;
-
-
-
-        }
-
-        #navUser a {
-            font-size: 15px;
-            color: white;
-        }
-
-
-        text {
-            border: 1px solid black;
-            width: 100%;
+        body {
+            background-color: #A4DB8F;
         }
     </style>
-
     <g:layoutHead/>
 </head>
 <body>
+
+
+
+
 <sec:ifLoggedIn>
     <nav id="navMain">
 
@@ -87,9 +40,47 @@
 </sec:ifLoggedIn>
 
 <sec:ifNotLoggedIn>
+
+    %{--Login DIV--}%
+    <div class="modal fade" id="login" role="dialog">
+        <div class="modal-dialog">
+            <div class="login s2ui_center ui-corner-all" style="text-align:center">
+                <div class="login-inner">
+                    <g:form controller="login" action="authenticate" method="post" autocomplete="off" style="background-color:whitesmoke; padding:10px 10px 10px 10px; border-radius:5px">
+                        <div id="login-inner" class="sign-in">
+                            <h2>FishingApp</h2>
+                            <p style="color:red;" id="loginFailedText"></p>
+
+                            <div class="input-group login-userinput">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                                <input autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
+                            </div>
+
+
+                            <div class="input-group"  style="padding-top: 5px; padding-bottom: 5px">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                                <input  name="password" id="password" type="password" class="form-control" placeholder="Password">
+                            </div>
+
+                            <g:actionSubmit value="Login" class="btn btn-primary btn-block login-button" />
+                            <div class="form-group" style="align:center">
+                                <label for="remember_me">Remember me</label>
+                                <input name="remember-me" id="remember_me" checked="checked" type="checkbox">
+                            </div>
+
+                            <g:link controller="registration">Register a new account</g:link><br/>
+                        </div>
+                    </g:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <nav id="navMain">
         <a id="mainLogoText" href="/fishingApp/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
-        <g:link class="loginBtn" controller="login" action="auth">Login</g:link>
+        <a class="loginBtn" id="loginBtn">Login</a>
     </nav>
 </sec:ifNotLoggedIn>
 
@@ -103,6 +94,7 @@
     <div id="spinner" class="spinner" style="display:none;">
         <g:message code="spinner.alt" default="Loading&hellip;"/>
     </div>
+
 
     <asset:javascript src="application.js"/>
 </body>

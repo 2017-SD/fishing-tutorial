@@ -29,9 +29,10 @@ class BootStrap {
         }
 
 
-        def fish1 = new Catch(tripName: "Up State", fishType: "Walleye", comment: "Bob Marley", dateCaught: today, xCoord: 47.1211, yCoord: 88.5694, user: testAdmin)
+        def fish1 = new Catch(tripName: "Up State", fishType: "Walleye", comment: "It was cold", dateCaught: today, xCoord: 47.1211, yCoord: 88.5694, user: testAdmin)
         fish1.save(flush:true)
-
+        def fish2 = new Catch(tripName: "Piligrim River", fishType: "Pike", comment: "40 incher", dateCaught: today, xCoord: 47.1211, yCoord: 88.5694, user: testAdmin)
+        fish1.save(flush:true)
 
 
 

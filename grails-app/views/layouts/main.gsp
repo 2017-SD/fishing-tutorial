@@ -1,19 +1,20 @@
 <!doctype html>
 <html lang="en" class="no-js">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/javascript; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>
-        <g:layoutTitle default="Grails"/>
+        The Fishing App
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <asset:stylesheet src="main.css"/>
+    %{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>--}%
+    <asset:javascript src="jquery-3.1.1.js" />
+    <asset:javascript src="bootstrap.js" />
     <asset:stylesheet src="bootstrap.css" />
     <asset:stylesheet src="bootstrap-theme.css" />
-    <asset:javascript src="bootstrap.js" />
+    <asset:stylesheet src="main.css"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <style>
         body {
@@ -30,7 +31,7 @@
 <sec:ifLoggedIn>
     <nav id="navMain">
 
-        <a id="mainLogoText" href="/fishingApp/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
+        <a id="mainLogoText" href="/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
         <g:link class="loginBtn" controller="Logout">log out</g:link>
     </nav>
     <nav id="navUser">
@@ -79,7 +80,7 @@
 
 
     <nav id="navMain">
-        <a id="mainLogoText" href="/fishingApp/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
+        <a id="mainLogoText" href="/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
         <a class="loginBtn" id="loginBtn">Login</a>
     </nav>
 </sec:ifNotLoggedIn>

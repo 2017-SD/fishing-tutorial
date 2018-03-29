@@ -150,7 +150,7 @@ $(document).ready( function() {
 
         if('serviceWorker' in navigator) {
             navigator.serviceWorker
-                .register('/fishingApp/assets/sw.js')
+                .register('/sw.js')
                 .then(function() { console.log("Service Worker Registered"); });
         }
 

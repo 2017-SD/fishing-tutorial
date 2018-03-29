@@ -18,9 +18,13 @@ if (typeof jQuery !== 'undefined') {
             $('#spinner').fadeOut();
         });
     })(jQuery);
+
+
+
+
 }
 
-
+jQuery.noConflict();
 // listener for login anchor
 $('#loginBtn').click(function() {
     $("#login").modal();

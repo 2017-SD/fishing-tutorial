@@ -22,6 +22,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     [pattern: '/logout/**',           access: ['permitAll']],
 	[pattern: '/catch/**', access: ['permitAll']],
     [pattern: '/dbconsole/**', access: ['ROLE_ADMIN']],
+	[pattern: '/sw.js', access: ['permitAll']]
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [
@@ -34,4 +35,4 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 ]
 
 grails.plugin.springsecurity.logout.postOnly = false
-
+grails.resources.pattern = '/**'

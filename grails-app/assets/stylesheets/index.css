@@ -58,6 +58,8 @@
     color: #080808;
 }
 
+
+
 #displayTripModal p {
     display: inline;
     font-size: large;
@@ -65,6 +67,14 @@
 
 #displayTripModal b {
     font-size: large;
+}
+
+#displayTripModalEdit {
+    margin-top: 25px !important;
+}
+
+#displayTripModalEdit input {
+    width: 100%;
 }
 
 /*TODO: make mobile & desktop center specific*/

@@ -63,6 +63,8 @@ function getLogin() {
             "<a>Offline Mode</a>" +
             "</nav>"
         );
+
+        return false;
     }
 
 }

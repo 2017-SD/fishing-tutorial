@@ -49,7 +49,7 @@ function showCatchDetail(index) {
 
     });
 
-
+    $("#editCatchButton").show();
     $("#catchDetail").modal();
 
 }
@@ -65,33 +65,32 @@ function editCatch() {
 
 
     $("#displayTripModal").html(
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>Trip Name:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalTripName' type='text' class='modalTextbox' value='" + tripName + "' /></div>" +
-        "</div>" +
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>Fish Type:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalFishType' type='text' value='" + fishType + "' /></div>" +
-        "</div>" +
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>Comment:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalComment' type='text' value='" + comment + "' /></div>" +
-        "</div>" +
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>X Coord:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalXCoord' type='text' value='" + xCoord + "' /></div>" +
-        "</div>" +
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>Y Coord:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalYCoord' type='text' value='" + yCoord + "' /></div>" +
-        "</div>" +
-        "<div class='row'>" +
-        "<div class='col-md-3 col-md-offset-1  col-xs-offset-1 col-xs-3'>Date Caught:</div>" +
-        "<div class='col-md-3 col-xs-3'><input id='modalDateCaught' type='date' value='" + dateCaught + "' /></div>" +
-        "</div>"
+        "<p>Trip Name</p>" +
+        "<input id='modalTripName' type='text' class='modalTextbox' value='" + tripName + "' /><br />" +
+
+        "<p>Fish Type</p>" +
+        "<input id='modalFishType' type='text' value='" + fishType + "' /><br />" +
+
+        "<p>Comment</p>" +
+        "<input id='modalComment' type='text' value='" + comment + "' /><br />" +
+
+        "<p>X Coord</p>" +
+        "<input id='modalXCoord' type='text' value='" + xCoord + "' /><br />" +
+
+
+        "<p>Y Coord</p>" +
+        "<input id='modalYCoord' type='text' value='" + yCoord + "' /><br />" +
+
+        "<p>Date Caught</p>" +
+        "<input id='modalDateCaught' type='date' value='" + dateCaught + "' /><br />"
     );
-    $("#displayTripModal").append("<div class='row'><input type='submit' onclick='submitEditCatch()' class='btn btn-primary tripModalButton' /></row>");
+
+    $("#displayTripModal").append("<input type='submit' onclick='submitEditCatch()' class='button' />");
+    $("#editCatchButton").hide();
 }
+
+
+
 
 function submitEditCatch() {
     var catchID = $("#modalCatchID");
@@ -226,31 +225,65 @@ $(document).ready( function() {
         var imageUpload = null;
         // var imageUpload = $('#image').get(0).files[0];
 
+        if (navigator.onLine && $("#loginBtn").text() !== "Login") {
 
 
-        if (navigator.onLine) {
-            $.post("catch/newCatch", {
-                    tripName: tripName.val(),
-                    fishType: fishType.val(),
-                    dateCaught: dateCaught.val(),
-                    comment: comment.val(),
-                    xCoord: xCoord.val(),
-                    yCoord: yCoord.val(),
-                    // image: imageUpload
-                },
-                function () {
+            var jForm = new FormData();
+            jForm.append("image", $('#image').get(0).files[0]);
+            jForm.append("tripName", tripName.val());
+            jForm.append("fishType", fishType.val());
+            jForm.append("dateCaught", dateCaught.val());
+            jForm.append("comment", comment.val());
+
+            jForm.append("xCoord", xCoord.val());
+            jForm.append("yCoord", yCoord.val());
+            $.ajax({
+                url: "catch/NewCatch",
+                type: "POST",
+                data: jForm,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+
+                success: function(data) {
                     tripName.val("");
                     fishType.val("");
                     dateCaught.val("");
                     comment.val("");
                     xCoord.val("");
                     yCoord.val("");
-                    // imageUpload.val("");
-
-                    alert("Submitted!");
-                }).fail(function () {
-                console.log("error");
+                    imageUpload.val("");
+                }
             });
+
+
+            // $.post("catch/newCatch", {
+            //         tripName: tripName.val(),
+            //         fishType: fishType.val(),
+            //         dateCaught: dateCaught.val(),
+            //         comment: comment.val(),
+            //         xCoord: xCoord.val(),
+            //         yCoord: yCoord.val(),
+            //         // image: imageUpload
+            //     },
+            //     function () {
+            //         tripName.val("");
+            //         fishType.val("");
+            //         dateCaught.val("");
+            //         comment.val("");
+            //         xCoord.val("");
+            //         yCoord.val("");
+            //         // imageUpload.val("");
+            //
+            //         alert("Submitted!");
+            //     }).fail(function () {
+            //     console.log("error");
+            // });
+
+
+
+
         } else {
             localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
 
@@ -269,13 +302,17 @@ $(document).ready( function() {
                         xCoord: xCoord.val(),
                         yCoord: yCoord.val(),
                     });
+                    
                     localforage.setItem('fishQueue', fishCaught, function() {
-                        alert('Saved: ' + JSON.stringify(fishCaught));
+                        tripName.val("");
+                        fishType.val("");
+                        dateCaught.val("");
+                        comment.val("");
+                        xCoord.val("");
+                        yCoord.val("");
+                        //imageUpload.val("");
 
-                        localforage.getItem('fishQueue', function(err, readValue) {
-                            alert('Read: ' + JSON.stringify(readValue));
-                        });
-
+                        alert("Added to queue, Login to upload catch!");
                     });
 
 
@@ -284,35 +321,6 @@ $(document).ready( function() {
 
             });
         }
-
-        // var jForm = new FormData();
-        // jForm.append("image", $('#image').get(0).files[0]);
-        // $.ajax({
-        //     url: "catch/NewCatch",
-        //     type: "POST",
-        //     data: jForm,
-        //     mimeType: "multipart/form-data",
-        //     contentType: false,
-        //     cache: false,
-        //     processData: false,
-        //
-        //     tripName: tripName.val(),
-        //     fishType: fishType.val(),
-        //     dateCaught : dateCaught.val(),
-        //     comment : comment.val(),
-        //     xCoord : xCoord.val(),
-        //     yCoord: yCoord.val(),
-        //
-        //     success: function(data) {
-        //         tripName.val("");
-        //         fishType.val("");
-        //         dateCaught.val("");
-        //         comment.val("");
-        //         xCoord.val("");
-        //         yCoord.val("");
-        //         imageUpload.val("");
-        //     }
-        // });
 
     });
 
@@ -331,7 +339,7 @@ $(document).ready( function() {
 
     $("#catchQueue").click(function() {
 
-        if (getLogin() != false) {
+        if ($("#loginBtn").text() !== "Login") {
 
             if (navigator.onLine) {
                 localforage.setDriver(localforage.LOCALSTORAGE).then(function () {

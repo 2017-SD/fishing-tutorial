@@ -12,10 +12,11 @@
 
     <div id="container">
 
-
+        %{-- Catch Queue Div --}%
         <div id="catchQueue">
 
         </div>
+
         %{-- New Catch Div--}%
         <button class='button' id="newCatchButton">New Catch</button> <br />
 

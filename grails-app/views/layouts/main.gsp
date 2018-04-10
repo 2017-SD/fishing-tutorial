@@ -11,6 +11,8 @@
     %{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>--}%
     <asset:javascript src="jquery-3.1.1.js" />
     <asset:javascript src="bootstrap.js" />
+    <asset:javascript src="localforage/localforage.js" />
+
     <asset:stylesheet src="bootstrap.css" />
     <asset:stylesheet src="bootstrap-theme.css" />
     <asset:stylesheet src="main.css"/>
@@ -28,19 +30,6 @@
 
 
 
-<sec:ifLoggedIn>
-    <nav id="navMain">
-
-        <a id="mainLogoText" href="/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
-        <g:link class="loginBtn" controller="Logout">log out</g:link>
-    </nav>
-    <nav id="navUser">
-        <a>Logged in as <sec:username/>!</a>
-    </nav>
-
-</sec:ifLoggedIn>
-
-<sec:ifNotLoggedIn>
 
     %{--Login DIV--}%
     <div class="modal fade" id="login" role="dialog">
@@ -52,15 +41,13 @@
                             <h2>FishingApp</h2>
                             <p style="color:red;" id="loginFailedText"></p>
 
-                            <div class="input-group login-userinput">
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                                <input autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
+                            <div>
+                                <input style="width:100%" autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
                             </div>
 
 
-                            <div class="input-group"  style="padding-top: 5px; padding-bottom: 5px">
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-                                <input  name="password" id="password" type="password" class="form-control" placeholder="Password">
+                            <div style="padding-top: 2px; padding-bottom: 10px">
+                                <input name="password" id="password" type="password" class="form-control" placeholder="Password">
                             </div>
 
                             <g:actionSubmit value="Login" class="btn btn-primary btn-block login-button" />
@@ -78,13 +65,12 @@
     </div>
 
 
-
-    <nav id="navMain">
-        <a id="mainLogoText" href="/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
-        <a class="loginBtn" id="loginBtn">Login</a>
-    </nav>
-</sec:ifNotLoggedIn>
-
+    <div id="navContainer">
+        <nav id="navMain">
+            <a id="mainLogoText" href="/"><g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp</a>
+            <a class="loginBtn" id="loginBtn">Login</a>
+        </nav>
+    </div>
 
 
 <g:layoutBody/>

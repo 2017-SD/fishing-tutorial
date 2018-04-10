@@ -6,103 +6,56 @@
 
     <asset:link rel="icon" href="favicon.ico" type="image/x-ico" />
     <asset:stylesheet src="index.css" />
-    <style>
 
-    </style>
 </head>
 <body>
 
+    <div id="container">
 
-    %{-- New Catch Div--}%
-    <div class="row">
-        <div class="col-md-12"><button class='center-block btn newCatchBtn' id="newCatchButton">New Catch</button></div>
-    </div>
-    <div id="newCatch" class="container col-md-offset-3 col-md-6 col-xs-12 col-xs-offset-0">
-        <div class="row">
-            <div class="col-md-12">
+
+        <div id="catchQueue">
+
+        </div>
+        %{-- New Catch Div--}%
+        <button class='button' id="newCatchButton">New Catch</button> <br />
+
+        %{--<form enctype="multipart/form-data" id="newCatchForm" name="newCatchForm">--}%
+            <div id="newCatch">
                 <h2>New Catch</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Trip Name</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <input id="tripName" type="text" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Fish Type</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <input type="text" id="fishType" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Date</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <input id="dateCaught" type="date" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>X Coordinate</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <input type="text" id="xCoord" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Y Coordinate</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <input type="text" id="yCoord" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Comment</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <textarea id="comment"></textarea>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <p>Upload Image</p>
-            </div>
-            <div class="col-md-6 col-xs-6">
+                <label for="tripName">Trip Name</label>
+                <input type="text" id="tripName" placeholder="The name of your trip...">
+
+                <label for="fishType">Fish Type</label>
+                <input type="text" id="fishType" placeholder="The type of fish you caught...">
+
+                <label for="dateCaught">Date Caught</label>
+                <input type="date"  id="dateCaught" />
+
+                <label for="xCoord">X-Coordinate</label>
+                <input type="num" id="xCoord" placeholder="X coordinate of fish location">
+
+                <label for="yCoord">Y-Coordinate</label>
+                <input type="num" id="yCoord" placeholder="Y coordinate of fish location">
+
+                <label for="comment">Comment</label>
+                <input type="text" id="comment" placeholder="Anything you would like to mention?">
+
+                <label for="image">Upload Image</label>
                 <input type="file" id="image" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+
                 <input id="submitNewCatch" class="center-block" type="submit" />
-            </div>
+
+            %{--</form>--}%
+
         </div>
-    </div>
 
 
-    %{-- Show Catches div--}%
-    <div class="row">
-        <div class="col-md-12"><button class='center-block btn' id="showCatchesButton">Your Catches</button></div>
-    </div>
-    <div id="showCatches" class="container col-md-offset-3 col-md-6 col-xs-offset-0 col-xs-12">
-        <div class="row">
-            <div class="col-md-4 col-xs-4">
-                <b>Trip</b>
-            </div>
-            <div class="col-md-4 col-xs-4">
-                <b>Type</b>
-            </div>
-            <div class="col-md-4 col-xs-4">
-                <b>Date</b>
-            </div>
+        %{-- Show Catches div--}%
+        <button class='button' id="showCatchesButton">Your Catches</button>
+        <div id="showCatches" class="">
+
         </div>
+
     </div>
 
 
@@ -110,7 +63,7 @@
 <div class="modal fade" id="catchDetail" role="dialog">
     <div class="modal-dialog">
         <a id='editCatchButton' onclick="editCatch()" style="float:right; padding-right: 5px;">EDIT</a>
-        <div id="displayTripModal" class="container">Placeholder eh</div>
+        <div id="displayTripModal">Placeholder eh</div>
         <p id='modalCatchID' style='display:none;'>" + index + "</p>
     </div>
 </div>

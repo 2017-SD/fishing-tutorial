@@ -27,23 +27,23 @@ class CatchController {
         User user = springSecurityService.currentUser
 
         def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)
-        def imageUpload = params.image
-
-        def destDir
-        if (Environment.current == Environment.DEVELOPMENT) {
-            destDir = new File(System.getProperty("user.home"))
-        }else if (Environment.current == Environment.PRODUCTION){
-            // not in prod yet
-            destDir = new File("/var/lib/tomcats/2017_sd_5/resources/")
-        }
-
-        def curTime = new Date()
-        def destFilename = String.format("%s.jpg", curTime.format("MM-dd-yyyy-HH-mm-ss"))
-        def destFile = new File(destDir, imageUpload)
-
-        // Save the video on the server
-        destFile.createNewFile()
-        imageUpload.transferTo(destFile)
+//        def imageUpload = params.image
+//
+//        def destDir
+//        if (Environment.current == Environment.DEVELOPMENT) {
+//            destDir = new File(System.getProperty("user.home"))
+//        }else if (Environment.current == Environment.PRODUCTION){
+//            // not in prod yet
+//            destDir = new File("/var/lib/tomcats/2017_sd_5/resources/")
+//        }
+//
+//        def curTime = new Date()
+//        def destFilename = String.format("%s.jpg", curTime.format("MM-dd-yyyy-HH-mm-ss"))
+//        File destFile = new File(destDir, destFilename)
+//
+//        // Save the video on the server
+//        destFile.createNewFile()
+//        imageUpload.transferTo(destFile)
 
         def fishCatch = new Catch(
                 user: user,
@@ -53,7 +53,7 @@ class CatchController {
                 xCoord: params.xCoord,
                 yCoord: params.yCoord,
                 comment: params.comment,
-                imagePath: destFile.path,
+//                imagePath: destFile.path,
         )
 
         fishCatch.save(flush: true, failOnError: true)

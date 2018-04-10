@@ -19,9 +19,6 @@ if (typeof jQuery !== 'undefined') {
         });
     })(jQuery);
 
-
-
-
 }
 
 jQuery.noConflict();
@@ -29,3 +26,44 @@ jQuery.noConflict();
 $('#loginBtn').click(function() {
     $("#login").modal();
 });
+
+
+function getLogin() {
+
+    if (navigator.onLine) {
+
+        $.get("user/getLogin", function (username) {
+
+            if (username != 'false') {
+                $("#navContainer").html(
+                    "<nav id='navMain'>" +
+                        "<a id='mainLogoText' href='/'><img id='mainLogo' src='/assets/logo.png'  /> FishingApp</a>" +
+                        "<a class='loginBtn' href='/logout'>log out</a>" +
+                    "</nav>" +
+                    "<nav id='navUser'>" +
+                        "<a>Logged in as " + username + "!</a>" +
+                    "</nav>"
+                );
+
+                $("#showCatchesButton").show();
+
+                return username;
+
+            } else {
+                return false;
+            }
+        });
+
+    } else {
+        $("#navContainer").html(
+            "<nav id='navMain'>" +
+                "<a id='mainLogoText' href='/'><img id='mainLogo' src='/assets/logo.png'  /> FishingApp</a>" +
+            "</nav>" +
+            "<nav id='navUser'>" +
+            "<a>Offline Mode</a>" +
+            "</nav>"
+        );
+    }
+
+}
+

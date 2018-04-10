@@ -20,8 +20,8 @@ function geoFindMe() {
         outputLatLong.innerHTML = "Unable to retrieve your location";
     };
 
-    $("#xCoord").val("Locating...");
-    $("#yCoord").val("Locating...");
+    // $("#xCoord").val("Locating...");
+    // $("#yCoord").val("Locating...");
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
@@ -35,25 +35,12 @@ function showCatchDetail(index) {
         // has a hidden paragraph tag with ID as value
         $.each(data, function (key, val) {
             $("#displayTripModal").html(
-                "<div class='container col-md-7'>" +
-                "<div class='row'>" +
-                "<div id='tripNameModal' class='col-md-10'><h2>" +
-                val.tripName +
-                "</h2></div>" +
-                "<div class='row'>" +
-                "<div class='col-md-2 col-xs-2'><b>Date</b></div>" +
-                "<div class='col-md-2 col-xs-2'><b>Fish Type</b></div>" +
-                "<div class='col-md-2 col-xs-2'><b>X Coord</b></div>" +
-                "<div class='col-md-2 col-xs-2'><b>Y Coord</b></div>" +
-                "<div class='col-md-2 col-xs-2'><b>Comment</b></div>" +
-                "</div>" +
-                "<div class='row'>" +
-                "<div id='dateCaughtModal' class='col-md-2 col-xs-2'>" + val.dateCaught.substring(0, 10) + "</div>" +
-                "<div id='fishTypeModal' class='col-md-2 col-xs-2'>" + val.fishType + "</div>" +
-                "<div id='xCoordModal' class='col-md-2 col-xs-2'>" + val.xCoord + "</div>" +
-                "<div id='yCoordModal' class='col-md-2 col-xs-2'>" + val.yCoord + "</div>" +
-                "<div id='commentModal' class='col-md-2 col-xs-2'>" + val.comment + "</div>" +
-                "</div>" +
+                "<h2 id='tripNameModal'>" + val.tripName + "</h2>" +
+                "<div id='tripModalData'>" +
+                    "<b>Date: </b><p id='dateCaughtModal'>" + val.dateCaught.substring(0, 10) + "</p><br />" +
+                    "<b>Fish Type: </b><p id='fishTypeModal'>" + val.fishType + "</p><br />" +
+                    "<b>Comments: </b><p id='commentModal'>" + val.comment + "</p><br />" +
+                    "<b>Location: </b><p id='xCoordModal'>" + val.xCoord + "</p>, <p id='yCoordModal'>" + val.yCoord + "</p><br />" +
                 "</div>"
             );
 
@@ -138,15 +125,23 @@ function submitEditCatch() {
 
 $(document).ready( function() {
 
-
-
-
-
-
     // navigator.onLine returns true if user is connected to internet
-    if (navigator.onLine) {
+    localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
 
-        geoFindMe();
+        localforage.getItem('fishQueue', function (err, value) {
+            if (value != null) {
+                var html = "<table><tr><th>Queue:</th></tr>";
+                for (var i = 0; i < value.length; i++) {
+                    html += "<tr><td>" + value[i].tripName + "</tr></td>";
+                }
+
+                html += "<tr><td><button id='submitQueue'>Upload Queue</button></td></tr></table>";
+                $("#catchQueue").html(html);
+            }
+        });
+    });
+
+    if (navigator.onLine) {
 
         if('serviceWorker' in navigator) {
             navigator.serviceWorker
@@ -154,13 +149,17 @@ $(document).ready( function() {
                 .then(function() { console.log("Service Worker Registered"); });
         }
 
+        // not logged in
+        if (getLogin() == false) {
+            $("#newCatchButton").hide();
+        }
 
     } else {
 
-        alert("YOU'RE OFFLINE");
-
-
+        $("#showCatchesButton").hide();
     }
+
+
 
     // Show catch button event listner
     $('#showCatchesButton').click(function() {
@@ -173,25 +172,31 @@ $(document).ready( function() {
         if (showCatchesDiv.is(":visible")) {
             showCatchesDiv.hide();
 
-            // this checks if we already loaded data into the div so we don't have to call to server again
-        } else if (showCatchesDiv.children().length > 1) {
+        // this checks if we already loaded data into the div so we don't have to call to server again
+        } else if (showCatchesDiv.children().length) {
             showCatchesDiv.show();
 
-            // call to the controller Catch, method getCatches
+        // call to the controller Catch, method getCatches
         } else {
             $.getJSON("catch/getCatches", function (data) {
                 var catches = [];
-
+                catches.push("<table>" +
+                    "<tr>" +
+                        "<th>Trip</th><th>Type</th><th>Date</th>" +
+                    "</tr>");
                 // getCatches returns an array converted as JSON, go through the JSON file creating populated rows
                 $.each(data, function (key, val) {
                     catches.push(
-                        "<div class='row' id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>" +
-                        "<div class='col-md-4 col-xs-4'>" + val.tripName + "</div>" +
-                        "<div class='col-md-4 col-xs-4'>" + val.fishType + "</div>" +
-                        "<div class='col-md-4 col-xs-4'>" + val.dateCaught.substring(0, 10) + "</div>" +
-                        "</div>"
+                        "<tr id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>" +
+                            "<td>" + val.tripName + "</td>" +
+                            "<td>" + val.fishType + "</td>" +
+                            "<td>" + val.dateCaught.substring(0, 10) + "</td>" +
+                        "</tr>"
                     );
                 });
+
+                catches.push("</table>");
+
 
                 // if there isn't anything in the database
                 if (catches.length === 0) {
@@ -211,34 +216,104 @@ $(document).ready( function() {
 
 
     $('#submitNewCatch').click(function() {
+
         var tripName = $("#tripName");
         var fishType = $("#fishType");
         var dateCaught = $("#dateCaught");
         var comment = $("#comment");
         var xCoord = $("#xCoord");
         var yCoord = $("#yCoord");
-        var imageUpload = $("#image");
+        var imageUpload = null;
+        // var imageUpload = $('#image').get(0).files[0];
 
-        $.post("catch/newCatch", {
-                tripName: tripName.val(),
-                fishType: fishType.val(),
-                dateCaught : dateCaught.val(),
-                comment : comment.val(),
-                xCoord : xCoord.val(),
-                yCoord: yCoord.val(),
-                image: imageUpload.val()
-            },
-            function(returnedData) {
-                tripName.val("");
-                fishType.val("");
-                dateCaught.val("");
-                comment.val("");
-                xCoord.val("");
-                yCoord.val("");
-                imageUpload.val("");
-            }).fail(function() {
-            console.log("error");
-        });
+
+
+        if (navigator.onLine) {
+            $.post("catch/newCatch", {
+                    tripName: tripName.val(),
+                    fishType: fishType.val(),
+                    dateCaught: dateCaught.val(),
+                    comment: comment.val(),
+                    xCoord: xCoord.val(),
+                    yCoord: yCoord.val(),
+                    // image: imageUpload
+                },
+                function () {
+                    tripName.val("");
+                    fishType.val("");
+                    dateCaught.val("");
+                    comment.val("");
+                    xCoord.val("");
+                    yCoord.val("");
+                    // imageUpload.val("");
+
+                    alert("Submitted!");
+                }).fail(function () {
+                console.log("error");
+            });
+        } else {
+            localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
+
+                localforage.getItem('fishQueue', function(err, value) {
+
+                    var fishCaught = [];
+                    if (value != null) {
+                        fishCaught = value
+                    }
+
+                    fishCaught.push({
+                        tripName: tripName.val(),
+                        fishType: fishType.val(),
+                        dateCaught: dateCaught.val(),
+                        comment: comment.val(),
+                        xCoord: xCoord.val(),
+                        yCoord: yCoord.val(),
+                    });
+                    localforage.setItem('fishQueue', fishCaught, function() {
+                        alert('Saved: ' + JSON.stringify(fishCaught));
+
+                        localforage.getItem('fishQueue', function(err, readValue) {
+                            alert('Read: ' + JSON.stringify(readValue));
+                        });
+
+                    });
+
+
+                });
+
+
+            });
+        }
+
+        // var jForm = new FormData();
+        // jForm.append("image", $('#image').get(0).files[0]);
+        // $.ajax({
+        //     url: "catch/NewCatch",
+        //     type: "POST",
+        //     data: jForm,
+        //     mimeType: "multipart/form-data",
+        //     contentType: false,
+        //     cache: false,
+        //     processData: false,
+        //
+        //     tripName: tripName.val(),
+        //     fishType: fishType.val(),
+        //     dateCaught : dateCaught.val(),
+        //     comment : comment.val(),
+        //     xCoord : xCoord.val(),
+        //     yCoord: yCoord.val(),
+        //
+        //     success: function(data) {
+        //         tripName.val("");
+        //         fishType.val("");
+        //         dateCaught.val("");
+        //         comment.val("");
+        //         xCoord.val("");
+        //         yCoord.val("");
+        //         imageUpload.val("");
+        //     }
+        // });
+
     });
 
 
@@ -254,6 +329,47 @@ $(document).ready( function() {
 
 
 
+    $("#catchQueue").click(function() {
+
+        if (getLogin() != false) {
+
+            if (navigator.onLine) {
+                localforage.setDriver(localforage.LOCALSTORAGE).then(function () {
+                    localforage.getItem('fishQueue', function (err, value) {
+
+                        for (var i = 0; i < value.length; i++) {
+                            $.post("catch/newCatch", {
+                                    tripName: value[i].tripName,
+                                    fishType: value[i].fishType,
+                                    dateCaught: value[i].dateCaught,
+                                    comment: value[i].comment,
+                                    xCoord: value[i].xCoord,
+                                    yCoord: value[i].yCoord,
+                                    // image: imageUpload
+                                },
+                                function (returnedData) {
+
+
+                                }).fail(function () {
+                                console.log("error");
+                            });
+                        }
+                    });
+
+                    localforage.removeItem('fishQueue', function (err, value) {
+                        $("#catchQueue").html("<b>Successfully Uploaded!</b>");
+                    })
+                });
+            } else {
+                alert("you ain't online")
+            }
+        } else {
+            alert("Log in first!");
+        }
+    });
+
+    getLogin();
+    geoFindMe();
 
 });
 

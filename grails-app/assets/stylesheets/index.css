@@ -1,26 +1,144 @@
+#container {
+    text-align: center;
+}
+
 #newCatchButton {
     margin-top: 15px;
 }
 
 #showCatchesButton {
     margin-top: 8px;
+    display: none;
 }
 
 #showCatches {
     display: none;
+    width: 90%;
+    margin-top: 10px;
+    margin-left: 5%;
+    padding-top: 5px;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    background-color: #4d9844;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+#showCatches td {
+    text-align: center;
+}
+
+#showCatches th {
+    text-align: center;
 }
 
 #newCatch {
     display: none;
+    width: 90%;
+    margin-top: 10px;
+    margin-left: 5%;
+    padding: 25px;
+    background-color: #4d9844;
+    border-radius: 5px;
+    border: 1px solid black;
 }
 
+#newCatch h2 {
+    color: #FFF;
+    font-weight: bolder;
+}
+
+#newCatch label {
+    color: #FFF;
+    font-weight: 500;
+}
+
+#displayTripModal {
+    color: #080808;
+}
+
+#displayTripModal p {
+    display: inline;
+    font-size: large;
+}
+
+#displayTripModal b {
+    font-size: large;
+}
+
+/*TODO: make mobile & desktop center specific*/
+#tripModalData {
+    text-align: left;
+    margin: auto;
+    width: 75%;
+}
+
+
+.button {
+    background: #2eb31d;
+    background-image: -webkit-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -moz-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -ms-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -o-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: linear-gradient(to bottom, #2eb31d, #4c9844);
+    -webkit-border-radius: 6;
+    -moz-border-radius: 6;
+    border-radius: 6px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: medium;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background: #4c9844;
+    background-image: -webkit-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -moz-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -ms-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -o-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: linear-gradient(to bottom, #4c9844, #2eb31d);
+    text-decoration: none;
+}
 .tripModalButton {
     margin-top: 9px;
 }
 
 .modal-dialog {
-    background-color:whitesmoke;
+    background-color: #a3db97;
     padding:10px 10px 10px 10px;
     border-radius:5px;
     text-align:center;
 }
+
+input[type=text], select, input[type=num], input[type=date] {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 0px;
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 8px;
+    display: inline-block;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+label {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: large;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {background-color: #77bb5d;}

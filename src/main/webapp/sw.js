@@ -16,7 +16,11 @@ self.addEventListener('install', function (event) {
                     '/assets/cache-polyfill.js?compile=false',
                     '/assets/index.js?compile=false',
                     '/assets/application.js?compile=false',
-                    '/assets/logo.png'
+                    '/assets/logo.png',
+                    '/assets/localforage/localforage.js?compile=false',
+                    '/assets/localforage/localforage.min.js?compile=false',
+                    '/assets/localforage/localforage.nopromises.js?compile=false',
+                    '/assets/localforage/localforage.nopromises.min.js?compile=false',
                 ]
             );
         })

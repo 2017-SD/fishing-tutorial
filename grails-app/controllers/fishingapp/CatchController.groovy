@@ -29,19 +29,11 @@ class CatchController {
         def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)
         def imageUpload = params.image
 
-        def destDir
-        if (Environment.current == Environment.DEVELOPMENT) {
-            destDir = new File(System.getProperty("user.home"))
-        }else if (Environment.current == Environment.PRODUCTION){
-            // not in prod yet
-            destDir = new File("/var/lib/tomcats/2017_sd_5/resources/")
-        }
+        def destDir = new File(System.getProperty("user.home") + "/Desktop/FishingApp/src/main/webapp/Images")
 
-        def curTime = new Date()
-        def destFilename = String.format("%s.jpg", curTime.format("MM-dd-yyyy-HH-mm-ss"))
+        def destFilename = String.format("%s.jpg", UUID.randomUUID().toString())
         File destFile = new File(destDir, destFilename)
 
-        // Save the video on the server
         destFile.createNewFile()
         imageUpload.transferTo(destFile)
 
@@ -53,7 +45,7 @@ class CatchController {
                 xCoord: params.xCoord,
                 yCoord: params.yCoord,
                 comment: params.comment,
-                image: destFile.path,
+                image: destFilename,
         )
 
         fishCatch.save(flush: true, failOnError: true)

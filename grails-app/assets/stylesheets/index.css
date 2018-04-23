@@ -84,6 +84,13 @@
     width: 75%;
 }
 
+.thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 
 .button {
     background: #2eb31d;
@@ -120,6 +127,11 @@
     padding:10px 10px 10px 10px;
     border-radius:5px;
     text-align:center;
+}
+
+.catchDetailImg {
+    width: 250px;
+    height: auto;
 }
 
 input[type=text], select, input[type=num], input[type=date] {

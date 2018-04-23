@@ -41,8 +41,10 @@
                 <label for="comment">Comment</label>
                 <input type="text" id="comment" placeholder="Anything you would like to mention?">
 
+
                 <label for="image">Upload Image</label>
-                <input type="file" id="image" />
+                <input id="image" type="file" accept="image/*" capture />
+                <div id="imageDiv"></div>
 
                 <input id="submitNewCatch" class="center-block" type="submit" />
 

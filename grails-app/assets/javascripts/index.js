@@ -1,3 +1,35 @@
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+
+function generateGUID() {
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+}
+
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
 
 function geoFindMe() {
     var outputLatLong = $("#outputGeolocation");
@@ -20,8 +52,6 @@ function geoFindMe() {
         outputLatLong.innerHTML = "Unable to retrieve your location";
     };
 
-    // $("#xCoord").val("Locating...");
-    // $("#yCoord").val("Locating...");
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
@@ -41,7 +71,8 @@ function showCatchDetail(index) {
                     "<b>Fish Type: </b><p id='fishTypeModal'>" + val.fishType + "</p><br />" +
                     "<b>Comments: </b><p id='commentModal'>" + val.comment + "</p><br />" +
                     "<b>Location: </b><p id='xCoordModal'>" + val.xCoord + "</p>, <p id='yCoordModal'>" + val.yCoord + "</p><br />" +
-                "</div>"
+                    "<img class='catchDetailImg' src='../../Images/" + val.image + "'/>" +
+            "</div>"
             );
 
             $("#modalCatchID").text(index)
@@ -122,23 +153,63 @@ function submitEditCatch() {
 }
 
 
+function submitQueue() {
+    if ($("#loginBtn").text() !== "Login") {
+
+        if (navigator.onLine) {
+            localforage.setDriver(localforage.LOCALSTORAGE).then(function () {
+                localforage.getItem('catches', function (err, value) {
+
+                    for (var i = 0; i < value.length; i++) {
+
+                        console.log(value[i].image);
+                        var block = value[i].image.split(";");
+                        var contentType = block[0].split(":")[1];
+                        var realData = block[1].split(",")[1];
+                        var image = b64toBlob(realData, contentType);
+
+                        console.log(image);
+
+                        var jForm = new FormData();
+
+                        jForm.append("image", image);
+                        jForm.append("tripName", value[i].tripName);
+                        jForm.append("fishType", value[i].fishType);
+                        jForm.append("dateCaught", value[i].dateCaught);
+                        jForm.append("comment", value[i].comment);
+                        jForm.append("xCoord", value[i].xCoord);
+                        jForm.append("yCoord", value[i].yCoord);
+
+
+                        $.ajax({
+                            url: "catch/NewCatch",
+                            type: "POST",
+                            data: jForm,
+                            mimeType: "multipart/form-data",
+                            contentType: false,
+                            cache: false,
+                            processData: false
+                        });
+                    }
+                });
+
+
+                localforage.removeItem('catches', function (err, value) {
+                    $("#catchQueue").html("<b>Successfully Uploaded!</b>");
+                })
+            });
+        } else {
+            alert("you ain't online")
+        }
+    } else {
+        alert("Log in first!");
+    }
+}
+
+
 $(document).ready( function() {
 
     // navigator.onLine returns true if user is connected to internet
-    localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
-
-        localforage.getItem('fishQueue', function (err, value) {
-            if (value != null) {
-                var html = "<table><tr><th>Queue:</th></tr>";
-                for (var i = 0; i < value.length; i++) {
-                    html += "<tr><td>" + value[i].tripName + "</tr></td>";
-                }
-
-                html += "<tr><td><button id='submitQueue'>Upload Queue</button></td></tr></table>";
-                $("#catchQueue").html(html);
-            }
-        });
-    });
 
     if (navigator.onLine) {
 
@@ -196,9 +267,8 @@ $(document).ready( function() {
 
                 catches.push("</table>");
 
-
                 // if there isn't anything in the database
-                if (catches.length === 0) {
+                if (catches.length === 2) {
                     showCatchesDiv.html("You haven't caught anything yet!");
                 } else {
                     // combine the rows as one HTML object and push it to the showCatches div
@@ -222,21 +292,26 @@ $(document).ready( function() {
         var comment = $("#comment");
         var xCoord = $("#xCoord");
         var yCoord = $("#yCoord");
-        var imageUpload = null;
-        // var imageUpload = $('#image').get(0).files[0];
+        var imageUpload = $('#image')[0].files[0];
+
+
 
         if (navigator.onLine && $("#loginBtn").text() !== "Login") {
 
-
             var jForm = new FormData();
-            jForm.append("image", $('#image').get(0).files[0]);
+
+            if (imageUpload !== undefined) {
+                jForm.append("image", imageUpload);
+            }
+
             jForm.append("tripName", tripName.val());
             jForm.append("fishType", fishType.val());
             jForm.append("dateCaught", dateCaught.val());
             jForm.append("comment", comment.val());
-
             jForm.append("xCoord", xCoord.val());
             jForm.append("yCoord", yCoord.val());
+
+
             $.ajax({
                 url: "catch/NewCatch",
                 type: "POST",
@@ -257,67 +332,50 @@ $(document).ready( function() {
                 }
             });
 
-
-            // $.post("catch/newCatch", {
-            //         tripName: tripName.val(),
-            //         fishType: fishType.val(),
-            //         dateCaught: dateCaught.val(),
-            //         comment: comment.val(),
-            //         xCoord: xCoord.val(),
-            //         yCoord: yCoord.val(),
-            //         // image: imageUpload
-            //     },
-            //     function () {
-            //         tripName.val("");
-            //         fishType.val("");
-            //         dateCaught.val("");
-            //         comment.val("");
-            //         xCoord.val("");
-            //         yCoord.val("");
-            //         // imageUpload.val("");
-            //
-            //         alert("Submitted!");
-            //     }).fail(function () {
-            //     console.log("error");
-            // });
-
-
-
-
         } else {
+
+
+            var reader = new FileReader();
+            reader.readAsDataURL(imageUpload);
+
+
             localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
 
-                localforage.getItem('fishQueue', function(err, value) {
+                // var photoID = generateGUID();
 
-                    var fishCaught = [];
-                    if (value != null) {
-                        fishCaught = value
-                    }
+                reader.onloadend = function() {
 
-                    fishCaught.push({
+                    var catchData = {
                         tripName: tripName.val(),
                         fishType: fishType.val(),
                         dateCaught: dateCaught.val(),
                         comment: comment.val(),
                         xCoord: xCoord.val(),
                         yCoord: yCoord.val(),
+                        image: reader.result
+                        // photoID: photoID
+                    };
+
+
+                    var catches = [];
+
+                    localforage.getItem('catches', function (err, value) {
+                        if (value !== null) {
+                            catches = value;
+                        }
+
+                        catches.push(catchData);
+
+                        // reader.onloadend = function() {
+                        //     localforage.setItem(photoID, reader.result);
+                        // };
+
+                        localforage.setItem('catches', catches, function () {
+                            alert("Added to queue, Login to upload catch!");
+                        })
                     });
-                    
-                    localforage.setItem('fishQueue', fishCaught, function() {
-                        tripName.val("");
-                        fishType.val("");
-                        dateCaught.val("");
-                        comment.val("");
-                        xCoord.val("");
-                        yCoord.val("");
-                        //imageUpload.val("");
 
-                        alert("Added to queue, Login to upload catch!");
-                    });
-
-
-                });
-
+                }
 
             });
         }
@@ -337,44 +395,54 @@ $(document).ready( function() {
 
 
 
-    $("#catchQueue").click(function() {
+    //TODO: convert to jquery and make it look like other code
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        var f = files[0];
+        if (f.type.match('image.*')) {
+            var reader = new FileReader();
 
-        if ($("#loginBtn").text() !== "Login") {
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    // Render thumbnail.
+                    var span = document.createElement('span');
+                    span.innerHTML = ['<img class="thumb" src="', e.target.result, '" />'].join('');
+                    $('#imageDiv').html(span);
 
-            if (navigator.onLine) {
-                localforage.setDriver(localforage.LOCALSTORAGE).then(function () {
-                    localforage.getItem('fishQueue', function (err, value) {
+                };
+            })(f);
 
-                        for (var i = 0; i < value.length; i++) {
-                            $.post("catch/newCatch", {
-                                    tripName: value[i].tripName,
-                                    fishType: value[i].fishType,
-                                    dateCaught: value[i].dateCaught,
-                                    comment: value[i].comment,
-                                    xCoord: value[i].xCoord,
-                                    yCoord: value[i].yCoord,
-                                    // image: imageUpload
-                                },
-                                function (returnedData) {
-
-
-                                }).fail(function () {
-                                console.log("error");
-                            });
-                        }
-                    });
-
-                    localforage.removeItem('fishQueue', function (err, value) {
-                        $("#catchQueue").html("<b>Successfully Uploaded!</b>");
-                    })
-                });
-            } else {
-                alert("you ain't online")
-            }
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
         } else {
-            alert("Log in first!");
+            alert("Invalid File!");
         }
+
+
+    }
+
+    document.getElementById('image').addEventListener('change', handleFileSelect, false);
+
+
+
+    localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
+
+        localforage.getItem('catches', function (err, value) {
+            if (value != null) {
+                var html = "<table><tr><th>Catch Queue:</th></tr>";
+
+                for (var i = 0; i < value.length; i++) {
+                    html += "<tr><td>" + value[i].tripName + "</tr></td>";
+                }
+
+                html += "<tr><td><button id='submitQueue' onclick='submitQueue()'>Upload Queue</button></td></tr></table>";
+                $("#catchQueue").html(html);
+            }
+        });
     });
+
+
 
     getLogin();
     geoFindMe();

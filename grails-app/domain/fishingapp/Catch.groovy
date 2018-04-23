@@ -17,6 +17,5 @@ class Catch {
         tripName blank: false
         fishType blank: false
         dateCaught blank: false
-        image nullable: true, maxSize: 1024*1024*2
     }
 }

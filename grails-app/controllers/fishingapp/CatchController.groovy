@@ -29,8 +29,7 @@ class CatchController {
         def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)
         def imageUpload = params.image
 
-        def destDir = new File(System.getProperty("user.home") + "/Desktop/FishingApp/src/main/webapp/Images")
-
+        def destDir = System.getProperty("user.home") + "/Desktop/FishingApp/src/main/webapp/Images"
         def destFilename = String.format("%s.jpg", UUID.randomUUID().toString())
         File destFile = new File(destDir, destFilename)
 
@@ -58,6 +57,17 @@ class CatchController {
         def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)
 
         Catch getCatch = Catch.get(params.ID)
+
+
+        def imageUpload = params.image
+
+        if (imageUpload != null) {
+            def destDir = System.getProperty("user.home") + "/Desktop/FishingApp/src/main/webapp/Images"
+            File destFile = new File(destDir, getCatch.image)
+            destFile.createNewFile()
+            imageUpload.transferTo(destFile)
+        }
+
 
         getCatch.tripName = params.tripName
         getCatch.fishType = params.fishType

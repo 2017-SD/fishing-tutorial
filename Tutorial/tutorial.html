@@ -1,0 +1,106 @@
+<!doctype HTML5>
+<html>
+<head>
+    <title>Grials Offline Fishing App Tutorial</title>
+    <style>
+		pre code {
+			background-color: #eee;
+			border: 1px solid #999;
+			display: block;
+			padding: 20px;
+		}
+
+        .w3-animate-fading{animation:fading 8s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+
+        .mySlides {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .imageHolder {
+            width: 75%;
+            height: 300px;
+            margin: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Grials Offline Fishing App Tutorial</h2>
+    <p>By <a href='https://github.com/jakemager'>Jake Mager</a></p>
+    <hr>
+
+    <h3>Introduction</h3>
+    <p>This tutorial covers the basics and everything you need to get started with offline support when developing with Grails.</p>
+    <p>A great introduction to start creating <a href="https://developers.google.com/web/progressive-web-apps/">progressive web apps (PWA)</a> and using
+        <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">service workers</a> with Grails.
+    </p>
+
+    <p>We will be creating an offline Fishing App to demonstarte this. The following will be covered:</p>
+    <ul>
+        <li>Building a Grails App</li>
+        <li>Spring Security Login</li>
+        <li>Adding to the Grails database using <a href="http://api.jquery.com/jquery.ajax/">ajax</a></li>
+        <li>Handling offline interactions</li>
+        <li>Building an offline queue with <a href="https://localforage.github.io/localForage/">localforage</a></li>
+        <li>Image Uploading</li>
+        <li>Geolocation</li>
+    </ul>
+
+    <p>However, the app will not be 100% done by the end of the tutorial, what won't be covered:</p>
+    <ul>
+        <li>Spring Security Registration</li>
+        <li>Styling (however a .css will be included)</li>
+        <li>Using multiple pages</li>
+        <li>Full PWA capabilities</li>
+        <li>Front end error checking</li>
+    </ul>
+
+    <h3>Prerequisites</h3>
+    <ul>
+        <li>It is recommended that you have completed all the programming assignements on <a href="http://cs4760.csl.mtu.edu/2018/assignments/cs4760-assignments/programming-assignments/">cs4760.cs.mtu.edu</a>, but 
+            this tutorial will go step by step and be as in depth as possible.
+        </li>
+        <li>Basic knowledge of <u>HTML</u> and <u>jQuery</u> is <b>required</b></li>
+        <li>We will be using <a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></li>
+    </ul>
+
+    <h3>Finished Web App</h3>
+    <div class="imageHolder">
+        <img class="mySlides w3-animate-fading" src="images/HomePage.png" />
+        <img class="mySlides w3-animate-fading" src="images/Login.png" />
+        <img class="mySlides w3-animate-fading" src="images/NewLog.png" />
+        <img class="mySlides w3-animate-fading" src="images/NewLogWithParameters.png" />
+        <img class="mySlides w3-animate-fading" src="images/Queue.png" />
+        <img class="mySlides w3-animate-fading" src="images/QueueUploaded.png" />
+        <img class="mySlides w3-animate-fading" src="images/CatchDetail.png" />    
+        <img class="mySlides w3-animate-fading" src="images/CatchEdit.png" />
+    </div>
+    
+
+    <h3>Let's Get Started</h3>
+
+    <!-- <pre>
+        <code>
+            
+        </code>
+    </pre> -->
+
+    <script>
+        var myIndex = 0;
+        carousel();
+
+        function carousel() {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";  
+            }
+            myIndex++;
+            if (myIndex > x.length) {myIndex = 1}    
+            x[myIndex-1].style.display = "block";  
+            setTimeout(carousel, 7000);    
+        }
+    </script>
+</body>
+</html>

@@ -14,7 +14,7 @@ class UserController {
         User user = springSecurityService.currentUser
 
         if (user != null) {
-            render user.username
+            render user.fname
         } else {
             render false
 

@@ -1,11 +1,17 @@
-function S4() {
+
+// Use with generateGUID function to make random int
+function genString() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 }
 
+// For generating unique ID
 function generateGUID() {
-    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+    return (genString() + genString() + "-" + genString() + "-4" + genString().substr(0,3) + "-" + genString() + "-" + genString() + genString() + genString()).toLowerCase();
 }
 
+
+// Converts blob string to a blob file
+// Taken from https://ourcodeworld.com/
 function b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
@@ -31,11 +37,11 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 }
 
 
+// Finds location using navigator and sets the values for newCatch
 function geoFindMe() {
-    var outputLatLong = $("#outputGeolocation");
 
     if (!navigator.geolocation){
-        outputLatLong.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+       //print some error here if you want
         return;
     }
 
@@ -46,16 +52,17 @@ function geoFindMe() {
         $("#xCoord").val(latitude);
         $("#yCoord").val(longitude);
 
-    };
+    }
 
     function error() {
-        outputLatLong.innerHTML = "Unable to retrieve your location";
-    };
+        //handle failed retrieve
+    }
 
     navigator.geolocation.getCurrentPosition(success, error);
 }
 
 
+// Populates modal that shows catches detail
 function showCatchDetail(index) {
 
     $.getJSON("catch/getCatch", { catchID: index }, function (data) {
@@ -85,7 +92,7 @@ function showCatchDetail(index) {
 
 }
 
-
+// Replaces everything in catch detail modal with inputs
 function editCatch() {
     var tripName = $("#tripNameModal").text();
     var fishType = $("#fishTypeModal").text();
@@ -96,33 +103,39 @@ function editCatch() {
 
 
     $("#displayTripModal").html(
-        "<p>Trip Name</p>" +
-        "<input id='modalTripName' type='text' class='modalTextbox' value='" + tripName + "' /><br />" +
+        "<form>" +
+            "<p>Trip Name</p>" +
+            "<input id='modalTripName' type='text' class='modalTextbox' value='" + tripName + "' /><br />" +
 
-        "<p>Fish Type</p>" +
-        "<input id='modalFishType' type='text' value='" + fishType + "' /><br />" +
+            "<p>Fish Type</p>" +
+            "<input id='modalFishType' type='text' value='" + fishType + "' /><br />" +
 
-        "<p>Comment</p>" +
-        "<input id='modalComment' type='text' value='" + comment + "' /><br />" +
+            "<p>Comment</p>" +
+            "<input id='modalComment' type='text' value='" + comment + "' /><br />" +
 
-        "<p>X Coord</p>" +
-        "<input id='modalXCoord' type='text' value='" + xCoord + "' /><br />" +
+            "<p>X Coord</p>" +
+            "<input id='modalXCoord' type='text' value='" + xCoord + "' /><br />" +
 
 
-        "<p>Y Coord</p>" +
-        "<input id='modalYCoord' type='text' value='" + yCoord + "' /><br />" +
+            "<p>Y Coord</p>" +
+            "<input id='modalYCoord' type='text' value='" + yCoord + "' /><br />" +
 
-        "<p>Date Caught</p>" +
-        "<input id='modalDateCaught' type='date' value='" + dateCaught + "' /><br />"
+            "<p>Date Caught</p>" +
+            "<input id='modalDateCaught' type='date' value='" + dateCaught + "' /><br />" +
+
+            "<p>Image</p>" +
+            "<input id='modalImage' type='file' accept='image/*' capture />" +
+
+            "<input type='submit' onclick='submitEditCatch()' class='button' />" +
+        "</form>"
+
     );
 
-    $("#displayTripModal").append("<input type='submit' onclick='submitEditCatch()' class='button' />");
+    // $("#displayTripModal").append("<input type='submit' onclick='submitEditCatch()' class='button' />");
     $("#editCatchButton").hide();
 }
 
-
-
-
+// Sends ajax request to submit the edited catch
 function submitEditCatch() {
     var catchID = $("#modalCatchID");
     var tripName = $("#modalTripName");
@@ -131,44 +144,66 @@ function submitEditCatch() {
     var comment = $("#modalComment");
     var xCoord = $("#modalXCoord");
     var yCoord = $("#modalYCoord");
-    var imageUpload = $("#image");
+    var imageUpload = $("#modalImage");
 
-    $.post("catch/editCatch", {
-            ID: catchID.text(),
-            tripName: tripName.val(),
-            fishType: fishType.val(),
-            dateCaught : dateCaught.val(),
-            comment : comment.val(),
-            xCoord : xCoord.val(),
-            yCoord: yCoord.val(),
-            image: imageUpload.val()
-        },
-        function(returnedData) {
+
+    var jForm = new FormData();
+
+    // if there is an image, append it to the form
+    if (imageUpload[0].files.length) {
+        jForm.append("image", imageUpload[0].files[0]);
+    } else {
+        imageUpload = null;
+    }
+
+    jForm.append("ID", catchID.text());
+    jForm.append("tripName", tripName.val());
+    jForm.append("fishType", fishType.val());
+    jForm.append("dateCaught", dateCaught.val());
+    jForm.append("comment", comment.val());
+    jForm.append("xCoord", xCoord.val());
+    jForm.append("yCoord", yCoord.val());
+
+
+    $.ajax({
+        url: "catch/editCatch",
+        type: "POST",
+        data: jForm,
+        mimeType: "multipart/form-data",
+        contentType: false,
+        cache: false,
+        processData: false,
+
+        success: function() {
             $("#catchDetail").modal('hide');
             $("#showCatches").html("");
             $("#showCatches").css("display", "none");
-        }).fail(function() {
-        console.log("error");
+        }
     });
 }
 
-
+// Function for when submit queue button is clicked
 function submitQueue() {
+
+    // this is a hacky way to check if the user is logged in
     if ($("#loginBtn").text() !== "Login") {
 
+        // check if user is online
         if (navigator.onLine) {
+
+            // if they are, enter localforage and extract info
             localforage.setDriver(localforage.LOCALSTORAGE).then(function () {
                 localforage.getItem('catches', function (err, value) {
 
+                    // go through each item in the 'catches' key
                     for (var i = 0; i < value.length; i++) {
 
-                        console.log(value[i].image);
+                        // convert the blob string back to an appropriate file
                         var block = value[i].image.split(";");
                         var contentType = block[0].split(":")[1];
                         var realData = block[1].split(",")[1];
                         var image = b64toBlob(realData, contentType);
 
-                        console.log(image);
 
                         var jForm = new FormData();
 
@@ -193,15 +228,18 @@ function submitQueue() {
                     }
                 });
 
-
+                // after all items in the queue are submitted, remove them
                 localforage.removeItem('catches', function (err, value) {
                     $("#catchQueue").html("<b>Successfully Uploaded!</b>");
                 })
             });
+
         } else {
-            alert("you ain't online")
+            // user not online
+            alert("You have to be online to do that!")
         }
     } else {
+        // user not logged in
         alert("Log in first!");
     }
 }
@@ -209,34 +247,26 @@ function submitQueue() {
 
 $(document).ready( function() {
 
-    // navigator.onLine returns true if user is connected to internet
-
+    // check if user is online with navigator
     if (navigator.onLine) {
 
-        if('serviceWorker' in navigator) {
+        // check if a service worker is supported then register it
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker
                 .register('/sw.js')
                 .then(function() { console.log("Service Worker Registered"); });
         }
 
-        // not logged in
-        if (getLogin() == false) {
-            $("#newCatchButton").hide();
-        }
-
     } else {
-
-        $("#showCatchesButton").hide();
+        $("#showCatchesButton").hide(); // hide show catches button if offline
     }
 
 
-
-    // Show catch button event listner
+    // showCatch button event listener
     $('#showCatchesButton').click(function() {
 
         // get show catch div
         var showCatchesDiv = $('#showCatches');
-
 
         // check if div is visible, hide it if not
         if (showCatchesDiv.is(":visible")) {
@@ -250,31 +280,37 @@ $(document).ready( function() {
         } else {
             $.getJSON("catch/getCatches", function (data) {
                 var catches = [];
-                catches.push("<table>" +
-                    "<tr>" +
-                        "<th>Trip</th><th>Type</th><th>Date</th>" +
-                    "</tr>");
-                // getCatches returns an array converted as JSON, go through the JSON file creating populated rows
-                $.each(data, function (key, val) {
-                    catches.push(
-                        "<tr id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>" +
-                            "<td>" + val.tripName + "</td>" +
-                            "<td>" + val.fishType + "</td>" +
-                            "<td>" + val.dateCaught.substring(0, 10) + "</td>" +
-                        "</tr>"
+
+                // if the user has catches
+                if (data.length) {
+
+                    catches.push("<table>" +
+                                    "<tr>" +
+                                        "<th>Trip</th><th>Type</th><th>Date</th>" +
+                                    "</tr>"
                     );
-                });
+                    // getCatches returns an array converted as JSON, go through the JSON file creating populated rows
+                    $.each(data, function (key, val) {
+                        catches.push(
+                            "<tr id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>" +
+                                "<td>" + val.tripName + "</td>" +
+                                "<td>" + val.fishType + "</td>" +
+                                "<td>" + val.dateCaught.substring(0, 10) + "</td>" +
+                            "</tr>"
+                        );
+                    });
+                    catches.push("</table>");
 
-                catches.push("</table>");
-
-                // if there isn't anything in the database
-                if (catches.length === 2) {
-                    showCatchesDiv.html("You haven't caught anything yet!");
-                } else {
                     // combine the rows as one HTML object and push it to the showCatches div
                     $(
                         catches.join("")
                     ).appendTo("#showCatches");
+
+                } else {
+
+                    // if there isn't anything in the database
+                    showCatchesDiv.html("You haven't caught anything yet!");
+
                 }
 
                 // make the div visible
@@ -284,6 +320,7 @@ $(document).ready( function() {
     });
 
 
+    // submitNewCatch button listener
     $('#submitNewCatch').click(function() {
 
         var tripName = $("#tripName");
@@ -295,7 +332,7 @@ $(document).ready( function() {
         var imageUpload = $('#image')[0].files[0];
 
 
-
+        // check if online and that the user is logged in
         if (navigator.onLine && $("#loginBtn").text() !== "Login") {
 
             var jForm = new FormData();
@@ -321,20 +358,22 @@ $(document).ready( function() {
                 cache: false,
                 processData: false,
 
-                success: function(data) {
+                success: function() {
                     tripName.val("");
                     fishType.val("");
                     dateCaught.val("");
                     comment.val("");
                     xCoord.val("");
                     yCoord.val("");
-                    imageUpload.val("");
+                    $('#image').val("");
                 }
             });
 
         } else {
 
+            // if they aren't put catch in localforage
 
+            // convert image to blob string setup
             var reader = new FileReader();
             reader.readAsDataURL(imageUpload);
 
@@ -343,6 +382,7 @@ $(document).ready( function() {
 
                 // var photoID = generateGUID();
 
+                // reader done converting file
                 reader.onloadend = function() {
 
                     var catchData = {
@@ -352,14 +392,17 @@ $(document).ready( function() {
                         comment: comment.val(),
                         xCoord: xCoord.val(),
                         yCoord: yCoord.val(),
-                        image: reader.result
+                        image: reader.result //reader.result is the string of the blob
                         // photoID: photoID
                     };
 
 
                     var catches = [];
 
+                    // get the key first
                     localforage.getItem('catches', function (err, value) {
+
+                        // if there is anything in 'catches' we will push to it
                         if (value !== null) {
                             catches = value;
                         }
@@ -370,8 +413,16 @@ $(document).ready( function() {
                         //     localforage.setItem(photoID, reader.result);
                         // };
 
+                        //
                         localforage.setItem('catches', catches, function () {
-                            alert("Added to queue, Login to upload catch!");
+                            alert("Added " + tripName.val() + " to queue, Login to upload catch!");
+                            tripName.val("");
+                            fishType.val("");
+                            dateCaught.val("");
+                            comment.val("");
+                            xCoord.val("");
+                            yCoord.val("");
+                            $('#image').val("");
                         })
                     });
 
@@ -380,25 +431,24 @@ $(document).ready( function() {
             });
         }
 
+        $("#newCatch").modal();
+
     });
 
 
+    // newCatchButton event listener
     $('#newCatchButton').click(function() {
-        var newCatchDiv = $("#newCatch");
-
-        if (newCatchDiv.is(":visible")) {
-            newCatchDiv.hide();
-        } else {
-            newCatchDiv.show();
-        }
+        $("#newCatch").modal();
     });
 
 
 
-    //TODO: convert to jquery and make it look like other code
+    // Displays thumbnail of selected image in the imageDiv
+    // this function is from HTML5 rocks!
     function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
         var f = files[0];
+
         if (f.type.match('image.*')) {
             var reader = new FileReader();
 
@@ -419,13 +469,13 @@ $(document).ready( function() {
             alert("Invalid File!");
         }
 
-
     }
 
+    // listener for the image button
     document.getElementById('image').addEventListener('change', handleFileSelect, false);
 
 
-
+    // check localforage and if anything is in there, create catch queue div
     localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
 
         localforage.getItem('catches', function (err, value) {
@@ -436,14 +486,20 @@ $(document).ready( function() {
                     html += "<tr><td>" + value[i].tripName + "</tr></td>";
                 }
 
-                html += "<tr><td><button id='submitQueue' onclick='submitQueue()'>Upload Queue</button></td></tr></table>";
+                html += "<tr><td><button id='submitQueue' class='button' onclick='submitQueue()'>Upload Queue</button></td></tr></table>";
                 $("#catchQueue").html(html);
             }
         });
     });
 
 
+    // listener for closeNewCatch button
+    $('#closeNewCatch').click(function() {
+        $("#newCatch").modal('toggle');
+    });
 
+
+    //
     getLogin();
     geoFindMe();
 

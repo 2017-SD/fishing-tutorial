@@ -27,36 +27,27 @@
 </head>
 <body>
 
-
-
-
-
     %{--Login DIV--}%
     <div class="modal fade" id="login" role="dialog">
         <div class="modal-dialog">
             <div class="login s2ui_center ui-corner-all" style="text-align:center">
                 <div class="login-inner">
-                    <g:form controller="login" action="authenticate" method="post" autocomplete="off" style="background-color:whitesmoke; padding:10px 10px 10px 10px; border-radius:5px">
+                    <g:form controller="login" action="authenticate" method="post" autocomplete="off">
                         <div id="login-inner" class="sign-in">
                             <h2>FishingApp</h2>
-                            <p style="color:red;" id="loginFailedText"></p>
 
                             <div>
-                                <input style="width:100%" autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
+                                <input style="width:60%" autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
                             </div>
 
 
                             <div style="padding-top: 2px; padding-bottom: 10px">
-                                <input name="password" id="password" type="password" class="form-control" placeholder="Password">
+                                <input style="width:60%; margin:auto;" name="password" id="password" type="password" class="form-control" placeholder="Password">
                             </div>
 
-                            <g:actionSubmit value="Login" class="btn btn-primary btn-block login-button" />
-                            <div class="form-group" style="align:center">
-                                <label for="remember_me">Remember me</label>
-                                <input name="remember-me" id="remember_me" checked="checked" type="checkbox">
-                            </div>
+                            <g:actionSubmit value="Login" class="button" />
 
-                            <g:link controller="registration">Register a new account</g:link><br/>
+                            %{--<g:link controller="registration">Register a new account</g:link><br/>--}%
                         </div>
                     </g:form>
                 </div>

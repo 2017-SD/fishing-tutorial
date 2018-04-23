@@ -21,7 +21,10 @@ if (typeof jQuery !== 'undefined') {
 
 }
 
+// for use with modals
 jQuery.noConflict();
+
+
 // listener for login anchor
 $('#loginBtn').click(function() {
     $("#login").modal();
@@ -32,16 +35,16 @@ function getLogin() {
 
     if (navigator.onLine) {
 
-        $.get("user/getLogin", function (username) {
+        $.get("user/getLogin", function (firstName) {
 
-            if (username != 'false') {
+            if (firstName != 'false') {
                 $("#navContainer").html(
                     "<nav id='navMain'>" +
                         "<a id='mainLogoText' href='/'><img id='mainLogo' src='/assets/logo.png'  /> FishingApp</a>" +
                         "<a class='loginBtn' href='/logout'>log out</a>" +
                     "</nav>" +
                     "<nav id='navUser'>" +
-                        "<a>Logged in as " + username + "!</a>" +
+                        "<a>Logged in as " + firstName + "!</a>" +
                     "</nav>"
                 );
 

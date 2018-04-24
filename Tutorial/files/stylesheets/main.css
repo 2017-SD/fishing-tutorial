@@ -1,0 +1,81 @@
+
+#navMain {
+    background-color: #FFF;
+    height: 60px;
+    width: 100%;
+    font-size: 15px;
+    color: #ffffff;
+    display: flex;
+    vertical-align: middle;
+    box-shadow: 2px 2px 2px #F0F0F0;
+}
+
+#mainLogoText {
+    color: #79b94c;
+    font-size: 24px;
+    font-weight: 500;
+    vertical-align: middle;
+    margin-top: 12px;
+
+}
+
+#mainLogo {
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.loginBtn {
+    margin-top: 15px;
+    color: #79b94c;
+    text-align: right;
+    vertical-align: middle;
+    font-size: 20px;
+    margin-left:auto;
+    margin-right:15px;
+}
+
+.button {
+    background: #2eb31d;
+    background-image: -webkit-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -moz-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -ms-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: -o-linear-gradient(top, #2eb31d, #4c9844);
+    background-image: linear-gradient(to bottom, #2eb31d, #4c9844);
+    -webkit-border-radius: 6;
+    -moz-border-radius: 6;
+    border-radius: 6px;
+    border: none;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: medium;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background: #4c9844;
+    background-image: -webkit-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -moz-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -ms-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: -o-linear-gradient(top, #4c9844, #2eb31d);
+    background-image: linear-gradient(to bottom, #4c9844, #2eb31d);
+    text-decoration: none;
+}
+
+#navUser {
+    background-color: #4F9834;
+    text-align: center;
+    width: 100%;
+
+}
+
+#navUser a {
+    font-size: 15px;
+    color: white;
+}
+
+
+text {
+    border: 1px solid black;
+    width: 100%;
+}

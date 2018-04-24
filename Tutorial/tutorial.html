@@ -1,91 +1,394 @@
 <!doctype HTML5>
 <html>
 <head>
-    <title>Grials Offline Fishing App Tutorial</title>
+    <title>Grails Offline Fishing App Tutorial</title>
     <style>
+        #content {
+            width: 75%;
+            margin: auto;
+        }
+
 		pre code {
 			background-color: #eee;
 			border: 1px solid #999;
 			display: block;
 			padding: 20px;
+            overflow-x: scroll;
 		}
 
-        .w3-animate-fading{animation:fading 8s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+        .w3-animate-fading{animation:fading 6s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
 
-        .mySlides {
+        .mySlides img {
             max-width: 100%;
-            max-height: 100%;
+            max-height: 350px;
         }
 
         .imageHolder {
-            width: 75%;
-            height: 300px;
+            width: 50%;
+            height: 365px;
             margin: auto;
+            padding-bottom: 25px
         }
 
     </style>
 </head>
 <body>
-    <h2>Grials Offline Fishing App Tutorial</h2>
-    <p>By <a href='https://github.com/jakemager'>Jake Mager</a></p>
-    <hr>
+    <div id='content'>
+        <h2>Grails Offline Fishing App Tutorial</h2>
+        <p>By <a href='https://github.com/jakemager'>Jake Mager</a></p>
+        <hr>
 
-    <h3>Introduction</h3>
-    <p>This tutorial covers the basics and everything you need to get started with offline support when developing with Grails.</p>
-    <p>A great introduction to start creating <a href="https://developers.google.com/web/progressive-web-apps/">progressive web apps (PWA)</a> and using
-        <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">service workers</a> with Grails.
-    </p>
+        <h3>Introduction</h3>
+        <p>This tutorial covers the basics and everything you need to get started with offline support when developing with Grails.</p>
+        <p>A great introduction to start creating <a href="https://developers.google.com/web/progressive-web-apps/">progressive web apps (PWA)</a> and using
+            <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">service workers</a> with Grails.
+        </p>
+        
+        <p>We will be creating an offline Fishing App to demonstarte this. The following will be covered:</p>
+        <ul>
+            <li>Building a Grails App</li>
+            <li>Spring Security Login</li>
+            <li>Adding to the Grails database using <a href="http://api.jquery.com/jquery.ajax/">ajax</a></li>
+            <li>Handling offline interactions</li>
+            <li>Building an offline queue with <a href="https://localforage.github.io/localForage/">localforage</a></li>
+            <li>Image Uploading</li>
+            <li>Geolocation</li>
+        </ul>
 
-    <p>We will be creating an offline Fishing App to demonstarte this. The following will be covered:</p>
-    <ul>
-        <li>Building a Grails App</li>
-        <li>Spring Security Login</li>
-        <li>Adding to the Grails database using <a href="http://api.jquery.com/jquery.ajax/">ajax</a></li>
-        <li>Handling offline interactions</li>
-        <li>Building an offline queue with <a href="https://localforage.github.io/localForage/">localforage</a></li>
-        <li>Image Uploading</li>
-        <li>Geolocation</li>
-    </ul>
+        <p>However, the app will not be 100% done by the end of the tutorial, what won't be covered:</p>
+        <ul>
+            <li>Spring Security Registration</li>
+            <li>Styling (however a .css will be included)</li>
+            <li>Using multiple pages</li>
+            <li>Full PWA capabilities</li>
+            <li>Front end error checking</li>
+        </ul>
 
-    <p>However, the app will not be 100% done by the end of the tutorial, what won't be covered:</p>
-    <ul>
-        <li>Spring Security Registration</li>
-        <li>Styling (however a .css will be included)</li>
-        <li>Using multiple pages</li>
-        <li>Full PWA capabilities</li>
-        <li>Front end error checking</li>
-    </ul>
+        <h3>Prerequisites</h3>
+        <ul>
+            <li>It is recommended that you have completed all the programming assignements on <a href="http://cs4760.csl.mtu.edu/2018/assignments/cs4760-assignments/programming-assignments/">cs4760.cs.mtu.edu</a>, but 
+                this tutorial will go step by step and be as in depth as possible.
+            </li>
+            <li>Basic knowledge of <u>HTML</u> and <u>jQuery</u> is <b>required</b></li>
+            <li>We will be using <a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></li>
+        </ul>
 
-    <h3>Prerequisites</h3>
-    <ul>
-        <li>It is recommended that you have completed all the programming assignements on <a href="http://cs4760.csl.mtu.edu/2018/assignments/cs4760-assignments/programming-assignments/">cs4760.cs.mtu.edu</a>, but 
-            this tutorial will go step by step and be as in depth as possible.
-        </li>
-        <li>Basic knowledge of <u>HTML</u> and <u>jQuery</u> is <b>required</b></li>
-        <li>We will be using <a href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></li>
-    </ul>
+        <h3>Finished Web App</h3>
+        <div class="imageHolder">
+            <div class="mySlides w3-animate-fading">
+                <img src="images/HomePage.png" />
+                <p>Home Page</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/Login.png" />
+                <p>Login</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/NewLog.png" />
+                <p>New Catch</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/NewLogWithParameters.png" />
+                <p>New Catch Filled</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/Queue.png" />
+                <p>Items pending in queue</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/QueueUploaded.png" />
+                <p>Queue Uploaded</p>
+            </div>
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/CatchDetail.png" />   
+                <p>Catch Details</p>
+            </div>    
+            <div class="mySlides w3-animate-fading">        
+                <img  src="images/CatchEdit.png" />
+                <p>Catch Details Edit Mode</p>
+            </div>
+        </div>
+        
 
-    <h3>Finished Web App</h3>
-    <div class="imageHolder">
-        <img class="mySlides w3-animate-fading" src="images/HomePage.png" />
-        <img class="mySlides w3-animate-fading" src="images/Login.png" />
-        <img class="mySlides w3-animate-fading" src="images/NewLog.png" />
-        <img class="mySlides w3-animate-fading" src="images/NewLogWithParameters.png" />
-        <img class="mySlides w3-animate-fading" src="images/Queue.png" />
-        <img class="mySlides w3-animate-fading" src="images/QueueUploaded.png" />
-        <img class="mySlides w3-animate-fading" src="images/CatchDetail.png" />    
-        <img class="mySlides w3-animate-fading" src="images/CatchEdit.png" />
-    </div>
+        <h3>Let's Get Started</h3>
+
+        <p>Go on ahead and open IntelliJ and create a New Project and select the <img src='https://zeroturnaround.com/wp-content/uploads/2015/02/grails_logo.png' width=15px /> Grails project on the left menu of the New Project Window</p>
+        <p>Let's name our project "FishingApp"</p>
+        <p>First things first, lets setup Spring Security Users</p>
+        <br /><hr><br />
+
+        <h3>Step 1: Setting Up Users</h3>
+        <p>We will use the Spring Security Core plugin with an additional plugin, the Spring Security UI plugin. The Spring Security Core authenticates users and control access to pages.  The Spring Security UI provides convenient UI  for controlling access and users.</p>
+        <p>Documention: 
+            <a href='http://grails-plugins.github.io/grails-spring-security-core/3.2.x/index.html'>Spring Security Core</a>, 
+            <a href='https://grails-plugins.github.io/grails-spring-security-ui/latest/'>Spring Security UI</a>
+        </p>
+        <p>To install plugins, all you need to do is to list them in <img src='images/buildGradle.png' /> file. Near the bottom of the 
+            <img src='images/buildGradle.png' /> file, you should see a long list of dependencies. Cut and paste into this dependencies list the declarations below:</p>
+        <pre>
+            <code>
+    dependencies {
+        ...
+        // Adds Spring Security plugins
+        compile 'org.grails.plugins:spring-security-core:3.2.0'
+        compile 'org.grails.plugins:spring-security-ui:3.1.1'
+        compile 'org.grails.plugins:mail:2.0.0.RC6'
+
+    }
+            </code>
+        </pre>
+
+        <p>Now setup Spring Security Core.</p>
+        <p>Open the Grails command prompt by clicking the “Tools” in the menu bar then select “Grails” followed by “Grails Command”. In the widow that pops up enter:</p>
+        <pre><code>s2-quickstart fishingapp User Role</code></pre>    
+        <img src='images/runGrailsCmd.png' />
+
+        <p>Then add the following to the bottom of grails-app -> conf -> application.groovy</p>
+        <pre><code>grails.plugin.springsecurity.logout.postOnly = false</code></pre>
+        <p>This will make logging out simple in the future</p>
+
+        <br /><hr><br />
+
+        <h3>Step 2: Creating Controller and Domain</h3>
+        <p>Before we make any new domains or controllers lets modify the User controller</p>
+        <p>Add the following after String password. This will hold our users first and last name</p>
+    <pre><code>
+    String fname
+    String lname
+    </code></pre>
+
+        <p>Now let us create a new domain for Catch</p>
+        <img src='images/newDomain.png' />
+        <p>In our new domain, we shall create variables for the trip name, fish type, comments, x and y coordinates, the date caught, and a path to where we will store our uploaded images</p>
+        <p>The <b>Catch.groovy</b> domain should look as follows:</p>
+        <pre>
+            <code>
+    package fishingapp
+
+    class Catch {
+        String tripName
+        String fishType
+        String comment
+        Float xCoord
+        Float yCoord
+        Date dateCaught
+        String image
+
+        static belongsTo = [user: User]
+
+        static constraints = {
+            tripName blank: false
+            fishType blank: false
+            dateCaught blank: false
+        }
+    }
+
+            </code>
+        </pre>
+
+        <p>The Catch domain needs a controller, lets create one</p>
+        <img src='images/newController.png' />
+
+        <p>We will also need a controller for our User</p>
+        <img src='images/newControllerUser.png' />
+        <p>Awesome! These will be our controllers for the application. We will come back to these later to create some methods</p>
+
+
+
+        <br /><hr><br />
+
+        <h3>Step 3: Bootstrapping and Permissions</h3>
+        <p>Before we do anything else with the app, we are going to change some permissions and bootstrap (preload) some data into our database</p>
+        <p>To change permissions to certain pages in our app go to grails-app -> conf -> application.groovy</p>
+        <p>In the static rules, add the following to the bottom. These permissions will let us have access to the catch controller methods, the service worker, User getLogin method, and access to H2 console.</p>
+        <pre>
+            <code>
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+
+        ... ,
+
+        [pattern: '/logout/**',      access: ['permitAll']],  // for easy access to logout
+	[pattern: '/catch/**',       access: ['permitAll']],  // for catch controller
+	[pattern: '/sw.js',          access: ['permitAll']],  // for service worker
+	[pattern: '/User/getLogin',  access: ['permitAll']],  // to check user login info
+        [pattern: '/dbconsole/**',   access: ['ROLE_ADMIN']], // for access to H2 console
     
+]
+            </code>
+        </pre>
+        <p>And yes, we have not created all of these pages / methods yet. We will get to that soon I promise.</p>
+        <p>Now that the permissions are set let's bootstrap some data! Open up init -> fishingapp -> BootStrap</p>
+        <p>Inside the BootStrap.groovy file everything can be created in the init definition. Add the following to the definition: </p>
+        <pre>
+            <code>
+def init = { servletContext ->
 
-    <h3>Let's Get Started</h3>
+    def today = new Date()
 
-    <!-- <pre>
-        <code>
-            
-        </code>
-    </pre> -->
+    // Add for creating Roles and Users
+    def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+    def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
 
+    // Create the admin account and save it
+    def testAdmin = new User(username: 'jake', password: 'password', fname: 'Jake', lname: 'Mager')
+
+    testAdmin.save(flush: true)
+
+    UserRole.create testAdmin, adminRole, true
+    UserRole.withSession {
+        it.flush()
+        it.clear()
+    }
+
+    // Create a fish and save it
+    def fish = new Catch(tripName: "Up State", fishType: "Walleye", comment: "It was cold", dateCaught: today, xCoord: 47.1211, yCoord: 88.5694, image: "IwillBreakEverything", user: testAdmin)
+    
+    fish.save(flush:true)
+
+}
+            </code>
+        </pre>
+        <p>Permissions and Bootstrapping complete! Time for the controller</p>
+
+        <br /><hr><br />
+
+        <h3>Step 4: Back to the Controller</h3>
+        <p>Open back up the Catch controller and put the following inside the CatchController class:</p>
+        <pre><code>def springSecurityService</code></pre>
+        <p>This will give us access to spring security services</p>
+        <p>Now create a method called getCatches, we will then use spring security to get the user and return all the catches by the user</p>
+        <pre>
+            <code>
+def getCatches() {
+    User user = springSecurityService.currentUser
+    render Catch.findAllByUser(user).toArray() as JSON
+}
+            </code>
+        </pre>
+        <p>Lets test this out. Run the grails app 
+            <img width=13px src='https://cdn2.iconfinder.com/data/icons/large-glossy-svg-icons/512/go_arrow_next_up_green_forward-512.png' />
+            and navigate to <u>http://localhost:8080/login/auth</u>
+        </p>
+        <p>Log in with our bootstrapped account <b>username:</b> Jake <b>password:</b> password</p>
+        <p>Now navigate to <u>http://localhost:8080/catch/getCatches</u> this is the controller we just made</p>
+        <p>The website should return something like this</p>
+        <img src='images/catchesGetCatches.png' />
+        <p>Cool!! Our method works as it should</p>
+        <p>Time to create a method for the <b>User</b> controller to check if the user is logged in, so open up the <b>User</b> controller and create a getLogin method</p>
+        <pre>
+            <code>
+class UserController {
+    def springSecurityService
+    
+    // this function checks if the user is logged in
+    def getLogin() {
+        User user = springSecurityService.currentUser
+
+        if (user != null) {
+            render user.fname
+        } else {
+            render false
+        }
+
+    }
+}     
+            </code>
+        </pre>
+
+        <p>We can test this method the same as the Catch one by going to the URL <u>http://localhost:8080/user/getLogin</u> it should display "Jake" if you're logged in and "false" if you're not</p>
+        <p>Now that we have that setup, lets get to setting up our navbar!</p>
+
+        <br /><hr><br />
+
+        <h3>Step 5: Main Template, Javascripts, and Styling</h3>
+        <p>Before we get to creating the navigation bar, we need to install bootstrap and localforage</p>
+        <p>Download the 
+            <a href="fishingAppFiles.zip" target="_blank">assets</a>,
+             this includes bootstrap 3.3.7, localforage, pre-made CSS, and a logo image. Put all these resources in the relative folders of your project.
+        </p>
+        <p>You will have to delete <b>main.css, grails.css, bootstrap.js, jquery-2.2.0.min.js, and bootstrap.css</b> from your assets first!</p>
+        <p>After you are done, your asset directory should look like this:</p>
+        <img src='images/assets.png' />
+        <p>Sweet, now that we have all that installed, let us start creating the navigation</p>
+        <p>This will all be done in grails-app -> views -> layouts -> main.gsp</p>
+        <p>The main.gsp makes a template, that can be used on all pages of our app. Once you open main.gsp, include all the JS and CSS you just added in the header </p>
+        <pre>
+            <code>
+&lt;head>
+    ...
+
+    &lt;asset:javascript src="jquery-3.1.1.js" />
+    &lt;asset:javascript src="bootstrap.js" />
+    &lt;asset:javascript src="localforage/localforage.js" />
+
+    &lt;asset:stylesheet src="bootstrap.css" />
+    &lt;asset:stylesheet src="bootstrap-theme.css" />
+    &lt;asset:stylesheet src="main.css"/>
+
+    ...
+&lt;/head>
+            </code>
+        </pre>
+
+        <p>Delete the div with the class "navbar navbar-default navbar-static-top"</p>
+        <p>In it's place we will put the login modal (a simple boilerblate modal I made a long time ago)</p>
+        <pre>
+            <code>
+%{--Login DIV--}%
+&lt;div class="modal fade" id="login" role="dialog">
+    &lt;div class="modal-dialog">
+        &lt;div class="login s2ui_center ui-corner-all" style="text-align:center">
+            &lt;div class="login-inner">
+                &lt;g:form controller="login" action="authenticate" method="post" autocomplete="off">
+                    &lt;div id="login-inner" class="sign-in">
+                        &lt;h2>FishingApp&lt;/h2>
+
+                        &lt;div>
+                            &lt;input autofocus="autofocus" name="username" id="username" type="text" class="form-control" placeholder="Username">
+                        &lt;/div>
+
+                        &lt;div class="passwordDiv">
+                            &lt;input name="password" id="password" type="password" class="form-control" placeholder="Password">
+                        &lt;/div>
+
+                        &lt;g:actionSubmit value="Login" class="button" />
+                    &lt;/div>
+                &lt;/g:form>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+&lt;/div>
+            </code>
+        </pre>
+
+        <p>We will also replace the old navigation bar with our own:</p>
+        <pre>
+            <code>
+&lt;div id="navContainer">
+    &lt;nav id="navMain">
+        &lt;a id="mainLogoText" href="/">&lt;g:img id="mainLogo" dir="images" file="logo.png"  /> FishingApp&lt;/a>
+        &lt;a class="loginBtn" id="loginBtn">Login&lt;/a>
+    &lt;/nav>
+&lt;/div>
+            </code>
+        </pre>
+
+        <p>We will make the login modal alive using javascript, main.gsp uses application.js by default so open that up under javascripts asset</p>
+        <p>First include a no conflict for jQuery, it seems to be interfering with the modals</p>
+        <pre><code>jQuery.noConflict(); // for use with modals</code></pre>
+        <p>Then we will add a listener for the login anchor to open the login modal</p>
+        <pre>
+            <code>
+// listener for login anchor
+$('#loginBtn').click(function() {
+    $("#login").modal();
+});
+            </code>
+        </pre>
+        <p>Go ahead and test out the login! Remember you can go to <u>http://localhost:8080/user/getLogin</u> to see if it worked.</p>
+
+    </div>
+   
     <script>
         var myIndex = 0;
         carousel();
@@ -99,7 +402,7 @@
             myIndex++;
             if (myIndex > x.length) {myIndex = 1}    
             x[myIndex-1].style.display = "block";  
-            setTimeout(carousel, 7000);    
+            setTimeout(carousel, 5000);    
         }
     </script>
 </body>

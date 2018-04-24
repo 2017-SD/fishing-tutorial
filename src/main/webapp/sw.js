@@ -13,7 +13,6 @@ self.addEventListener('install', function (event) {
                     '/assets/bootstrap.css?compile=false',
                     '/assets/bootstrap-theme.css?compile=false',
                     '/assets/bootstrap.js?compile=false',
-                    '/assets/cache-polyfill.js?compile=false',
                     '/assets/index.js?compile=false',
                     '/assets/application.js?compile=false',
                     '/assets/logo.png',

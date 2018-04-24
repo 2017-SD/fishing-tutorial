@@ -8,7 +8,6 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    %{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>--}%
     <asset:javascript src="jquery-3.1.1.js" />
     <asset:javascript src="bootstrap.js" />
     <asset:javascript src="localforage/localforage.js" />
@@ -46,8 +45,6 @@
                             </div>
 
                             <g:actionSubmit value="Login" class="button" />
-
-                            %{--<g:link controller="registration">Register a new account</g:link><br/>--}%
                         </div>
                     </g:form>
                 </div>

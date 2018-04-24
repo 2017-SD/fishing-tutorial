@@ -1,0 +1,161 @@
+#container {
+    text-align: center;
+}
+
+#newCatchButton {
+    margin-top: 15px;
+}
+
+#editCatchButton {
+    float:right;
+    padding-right: 5px;
+}
+
+#showCatchesButton {
+    margin-top: 8px;
+    display: none;
+}
+
+#closeNewCatch {
+    margin-top: 8px;
+    display: inline;
+}
+
+#showCatches {
+    display: none;
+    width: 90%;
+    margin-top: 10px;
+    margin-left: 5%;
+    padding-top: 5px;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    background-color: #4d9844;
+    border-radius: 5px;
+    border: 1px solid black;
+    color: #FFF;
+}
+
+#showCatches td {
+    text-align: center;
+}
+
+#showCatches th {
+    text-align: center;
+}
+
+#newCatch {
+    width: 95%;
+    height: 95%;
+    margin: auto;
+    background-color: #a3db97;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+#submitNewCatch {
+    margin-top: 10px;
+}
+
+#newCatch h2 {
+    color: #FFF;
+    font-weight: bolder;
+}
+
+#newCatch label {
+    color: #FFF;
+    font-weight: 500;
+}
+
+#displayTripModal {
+    color: #080808;
+}
+
+#modalCatchID {
+    display:none;
+}
+
+#displayTripModal p {
+    display: inline;
+    font-size: large;
+}
+
+#displayTripModal b {
+    font-size: large;
+}
+
+#displayTripModalEdit {
+    margin-top: 25px !important;
+}
+
+#displayTripModalEdit input {
+    width: 100%;
+}
+
+/*TODO: make mobile & desktop center specific*/
+#tripModalData {
+    text-align: left;
+    margin: auto;
+    width: 75%;
+}
+
+.thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+.tripModalButton {
+    margin-top: 9px;
+}
+
+.modal-dialog {
+    background-color: #a3db97;
+    padding:10px 10px 10px 10px;
+    border-radius:5px;
+    text-align:center;
+}
+
+.catchDetailImg {
+    width: 250px;
+    height: auto;
+}
+
+input[type=text], select, input[type=num], input[type=date] {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 0px;
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 8px;
+    display: inline-block;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=file] {
+    padding-top: 8px;
+    color: white;
+    font-size: medium;
+}
+
+label {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    font-size: large;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {background-color: #77bb5d;}

@@ -62,6 +62,35 @@ function geoFindMe() {
 }
 
 
+// Displays thumbnail of selected image in the imageDiv
+// this function is from HTML5 rocks!
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    var f = files[0];
+
+    if (f.type.match('image.*')) {
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                // Render thumbnail.
+                var span = document.createElement('span');
+                span.innerHTML = ['<img class="thumb" src="', e.target.result, '" />'].join('');
+                $('#imageDiv').html(span);
+
+            };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+    } else {
+        alert("Invalid File!");
+    }
+
+}
+
+
 // Populates modal that shows catches detail
 function showCatchDetail(index) {
 
@@ -77,10 +106,13 @@ function showCatchDetail(index) {
                     "<b>Date: </b><p id='dateCaughtModal'>" + val.dateCaught.substring(0, 10) + "</p><br />" +
                     "<b>Fish Type: </b><p id='fishTypeModal'>" + val.fishType + "</p><br />" +
                     "<b>Comments: </b><p id='commentModal'>" + val.comment + "</p><br />" +
-                    "<b>Location: </b><p id='xCoordModal'>" + val.xCoord + "</p>, <p id='yCoordModal'>" + val.yCoord + "</p><br />" +
-                    "<img class='catchDetailImg' src='../../Images/" + val.image + "'/>" +
-            "</div>"
+                    "<b>Location: </b><p id='xCoordModal'>" + val.xCoord + "</p>, <p id='yCoordModal'>" + val.yCoord + "</p><br />"
             );
+
+            // if there is an image append it!
+            if (val.image !== null) {
+                $("#displayTripModal").append("<img class='catchDetailImg' src='../../Images/" + val.image + "'/></div>");
+            }
 
             $("#modalCatchID").text(index)
         });
@@ -91,6 +123,7 @@ function showCatchDetail(index) {
     $("#catchDetail").modal();
 
 }
+
 
 // Replaces everything in catch detail modal with inputs
 function editCatch() {
@@ -131,9 +164,9 @@ function editCatch() {
 
     );
 
-    // $("#displayTripModal").append("<input type='submit' onclick='submitEditCatch()' class='button' />");
     $("#editCatchButton").hide();
 }
+
 
 // Sends ajax request to submit the edited catch
 function submitEditCatch() {
@@ -182,7 +215,77 @@ function submitEditCatch() {
     });
 }
 
-// Function for when submit queue button is clicked
+
+// This is used for submit queue, it takes the parameter
+// of the catch so the image can be extracted and converted
+// from localforage without synchronization issues
+function submitQueueHelper(value) {
+
+    // All data being sent to catch/NewCatch is stored in here
+    var jForm = new FormData();
+
+    // if there is a photo
+    if (value.photoID !== null) {
+        // This is getting the photo of the catch out of localforage
+        // it then makes a promise in which the ajax is called after
+        // it is full filled
+        localforage.getItem(value.photoID, function (err, data) {
+
+            // convert the blob string back to an appropriate file
+            var block = data.split(";");
+            var contentType = block[0].split(":")[1];
+            var realData = block[1].split(",")[1];
+            var image = b64toBlob(realData, contentType);
+
+
+            jForm.append("tripName", value.tripName);
+            jForm.append("fishType", value.fishType);
+            jForm.append("dateCaught", value.dateCaught);
+            jForm.append("comment", value.comment);
+            jForm.append("xCoord", value.xCoord);
+            jForm.append("yCoord", value.yCoord);
+            jForm.append("image", image);
+
+        }).then(function () {
+
+            $.ajax({
+                url: "catch/NewCatch",
+                type: "POST",
+                data: jForm,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false
+            });
+
+            localforage.removeItem(value.photoID);
+
+        });
+
+
+    } else {
+
+        jForm.append("tripName", value.tripName);
+        jForm.append("fishType", value.fishType);
+        jForm.append("dateCaught", value.dateCaught);
+        jForm.append("comment", value.comment);
+        jForm.append("xCoord", value.xCoord);
+        jForm.append("yCoord", value.yCoord);
+        jForm.append("image", null);
+
+        $.ajax({
+            url: "catch/NewCatch",
+            type: "POST",
+            data: jForm,
+            mimeType: "multipart/form-data",
+            contentType: false,
+            cache: false,
+            processData: false
+        });
+    }
+}
+
+
 function submitQueue() {
 
     // this is a hacky way to check if the user is logged in
@@ -192,46 +295,19 @@ function submitQueue() {
         if (navigator.onLine) {
 
             // if they are, enter localforage and extract info
-            localforage.setDriver(localforage.LOCALSTORAGE).then(function () {
+            localforage.setDriver(localforage.INDEXEDDB).then(function () {
                 localforage.getItem('catches', function (err, value) {
 
                     // go through each item in the 'catches' key
                     for (var i = 0; i < value.length; i++) {
-
-                        // convert the blob string back to an appropriate file
-                        var block = value[i].image.split(";");
-                        var contentType = block[0].split(":")[1];
-                        var realData = block[1].split(",")[1];
-                        var image = b64toBlob(realData, contentType);
-
-
-                        var jForm = new FormData();
-
-                        jForm.append("image", image);
-                        jForm.append("tripName", value[i].tripName);
-                        jForm.append("fishType", value[i].fishType);
-                        jForm.append("dateCaught", value[i].dateCaught);
-                        jForm.append("comment", value[i].comment);
-                        jForm.append("xCoord", value[i].xCoord);
-                        jForm.append("yCoord", value[i].yCoord);
-
-
-                        $.ajax({
-                            url: "catch/NewCatch",
-                            type: "POST",
-                            data: jForm,
-                            mimeType: "multipart/form-data",
-                            contentType: false,
-                            cache: false,
-                            processData: false
-                        });
+                        submitQueueHelper(value[i]);    // This function is called to avoid race conditions
                     }
-                });
 
-                // after all items in the queue are submitted, remove them
-                localforage.removeItem('catches', function (err, value) {
-                    $("#catchQueue").html("<b>Successfully Uploaded!</b>");
-                })
+                    // after all items in the queue are submitted, remove them
+                    localforage.removeItem('catches', function (err, value) {
+                        $("#catchQueue").html("<b>Successfully Uploaded!</b>");
+                    })
+                });
             });
 
         } else {
@@ -242,10 +318,11 @@ function submitQueue() {
         // user not logged in
         alert("Log in first!");
     }
+
 }
 
 
-$(document).ready( function() {
+$(document).ready(function() {
 
     // check if user is online with navigator
     if (navigator.onLine) {
@@ -282,7 +359,7 @@ $(document).ready( function() {
                 var catches = [];
 
                 // if the user has catches
-                if (data.length) {
+                if (data.length > 0) {
 
                     catches.push("<table>" +
                                     "<tr>" +
@@ -320,6 +397,18 @@ $(document).ready( function() {
     });
 
 
+    // newCatchButton event listener
+    $('#newCatchButton').click(function() {
+        $("#newCatch").modal();
+    });
+
+
+    // listener for closeNewCatch button
+    $('#closeNewCatch').click(function() {
+        $("#newCatch").modal('toggle');
+    });
+
+
     // submitNewCatch button listener
     $('#submitNewCatch').click(function() {
 
@@ -330,6 +419,22 @@ $(document).ready( function() {
         var xCoord = $("#xCoord");
         var yCoord = $("#yCoord");
         var imageUpload = $('#image')[0].files[0];
+
+
+        // user validation
+        if (dateCaught.val() === "") {
+            dateCaught.css("border", "1px solid red");
+            alert("Enter a date!");
+            return;
+        } else if (tripName.val() === "") {
+            tripName.css("border", "1px solid red");
+            alert("Enter a trip name!");
+            return;
+        } else if (fishType.val() === "") {
+            fishType.css("border", "1px solid red");
+            alert("Enter a fish type!");
+            return;
+        }
 
 
         // check if online and that the user is logged in
@@ -366,117 +471,84 @@ $(document).ready( function() {
                     xCoord.val("");
                     yCoord.val("");
                     $('#image').val("");
+                    alert("Saved catch!");
                 }
             });
 
-        } else {
+        } else {  // Put Catch in localforage
 
-            // if they aren't put catch in localforage
+            // check if user has image
+            if (imageUpload !== undefined) {
+                // for converting image to blob string setup
+                var reader = new FileReader();
+                reader.readAsDataURL(imageUpload);
 
-            // convert image to blob string setup
-            var reader = new FileReader();
-            reader.readAsDataURL(imageUpload);
+                var photoID = generateGUID();   // generate id for the photos
+            }
 
 
-            localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
+            localforage.setDriver(localforage.INDEXEDDB).then(function() {
 
-                // var photoID = generateGUID();
+                // create dictionary for the catch data
+                var catchData = {
+                    tripName: tripName.val(),
+                    fishType: fishType.val(),
+                    dateCaught: dateCaught.val(),
+                    comment: comment.val(),
+                    xCoord: xCoord.val(),
+                    yCoord: yCoord.val()
+                };
 
-                // reader done converting file
-                reader.onloadend = function() {
 
-                    var catchData = {
-                        tripName: tripName.val(),
-                        fishType: fishType.val(),
-                        dateCaught: dateCaught.val(),
-                        comment: comment.val(),
-                        xCoord: xCoord.val(),
-                        yCoord: yCoord.val(),
-                        image: reader.result //reader.result is the string of the blob
-                        // photoID: photoID
+                // if there is an image
+                if (imageUpload !== undefined) {
+                    catchData.photoID = photoID;    // put it in the dictionary
+
+                    // store image in localForage
+                    reader.onloadend = function() {
+                        localforage.setItem(photoID, reader.result);    // reader.result is the blob string
                     };
 
+                } else {
 
-                    var catches = [];
-
-                    // get the key first
-                    localforage.getItem('catches', function (err, value) {
-
-                        // if there is anything in 'catches' we will push to it
-                        if (value !== null) {
-                            catches = value;
-                        }
-
-                        catches.push(catchData);
-
-                        // reader.onloadend = function() {
-                        //     localforage.setItem(photoID, reader.result);
-                        // };
-
-                        //
-                        localforage.setItem('catches', catches, function () {
-                            alert("Added " + tripName.val() + " to queue, Login to upload catch!");
-                            tripName.val("");
-                            fishType.val("");
-                            dateCaught.val("");
-                            comment.val("");
-                            xCoord.val("");
-                            yCoord.val("");
-                            $('#image').val("");
-                        })
-                    });
-
+                    catchData.photoID = null;   // put it in the dictionary as null
                 }
 
+                var catches = [];
+
+                // get the key first
+                localforage.getItem('catches', function (err, value) {
+
+                    // if there is anything in 'catches' we will push to it
+                    if (value !== null) {
+                        catches = value;
+                    }
+
+                    catches.push(catchData);
+
+
+                    // clear localforage catches
+                    localforage.setItem('catches', catches, function () {
+                        alert("Added " + tripName.val() + " to queue, Login to upload catch!");
+                        tripName.val("");
+                        fishType.val("");
+                        dateCaught.val("");
+                        comment.val("");
+                        xCoord.val("");
+                        yCoord.val("");
+                        $('#image').val("");
+                    })
+                });
             });
         }
-
-        $("#newCatch").modal();
-
     });
 
-
-    // newCatchButton event listener
-    $('#newCatchButton').click(function() {
-        $("#newCatch").modal();
-    });
-
-
-
-    // Displays thumbnail of selected image in the imageDiv
-    // this function is from HTML5 rocks!
-    function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
-        var f = files[0];
-
-        if (f.type.match('image.*')) {
-            var reader = new FileReader();
-
-            // Closure to capture the file information.
-            reader.onload = (function(theFile) {
-                return function(e) {
-                    // Render thumbnail.
-                    var span = document.createElement('span');
-                    span.innerHTML = ['<img class="thumb" src="', e.target.result, '" />'].join('');
-                    $('#imageDiv').html(span);
-
-                };
-            })(f);
-
-            // Read in the image file as a data URL.
-            reader.readAsDataURL(f);
-        } else {
-            alert("Invalid File!");
-        }
-
-    }
 
     // listener for the image button
-    document.getElementById('image').addEventListener('change', handleFileSelect, false);
-
+    $('#image').change(handleFileSelect);
 
     // check localforage and if anything is in there, create catch queue div
-    localforage.setDriver(localforage.LOCALSTORAGE).then(function() {
+    localforage.setDriver(localforage.INDEXEDDB).then(function() {
 
         localforage.getItem('catches', function (err, value) {
             if (value != null) {
@@ -486,21 +558,13 @@ $(document).ready( function() {
                     html += "<tr><td>" + value[i].tripName + "</tr></td>";
                 }
 
-                html += "<tr><td><button id='submitQueue' class='button' onclick='submitQueue()'>Upload Queue</button></td></tr></table>";
+                html += "<tr><td><button id='submitQueue' onclick='submitQueue()' class='button'>Upload Queue</button></td></tr></table>";
                 $("#catchQueue").html(html);
             }
         });
     });
 
 
-    // listener for closeNewCatch button
-    $('#closeNewCatch').click(function() {
-        $("#newCatch").modal('toggle');
-    });
-
-
-    //
-    getLogin();
     geoFindMe();
 
 });

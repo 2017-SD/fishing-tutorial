@@ -28,14 +28,9 @@ self.addEventListener('install', function (event) {
 });
 
 
-self.addEventListener('activate', function (event) {
-    console.log('V1 now ready to handle fetches!');
-
-});
-
  // Cache falling back to the network
  // https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker
- self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function(event) {
     event.respondWith(
         caches.match(event.request).then(function(response) {
             return response || fetch(event.request);

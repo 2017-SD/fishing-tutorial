@@ -16,6 +16,11 @@ class Catch {
     static constraints = {
         tripName blank: false
         fishType blank: false
+        comment nullable: true
+        xCoord nullable: true
+        yCoord nullable: true
         dateCaught blank: false
+        image nullable: true
+
     }
 }

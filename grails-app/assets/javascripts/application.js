@@ -33,11 +33,14 @@ $('#loginBtn').click(function() {
 
 function getLogin() {
 
+    // check if the user is online
     if (navigator.onLine) {
 
+        // call method getLogin in user
         $.get("user/getLogin", function (firstName) {
 
-            if (firstName != 'false') {
+            // check if user is logged in
+            if (firstName !== 'false') {
                 $("#navContainer").html(
                     "<nav id='navMain'>" +
                         "<a id='mainLogoText' href='/'><img id='mainLogo' src='/assets/logo.png'  /> FishingApp</a>" +
@@ -72,3 +75,5 @@ function getLogin() {
 
 }
 
+
+getLogin();

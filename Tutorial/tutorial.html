@@ -157,20 +157,22 @@
         <pre><code>s2-quickstart fishingapp User Role</code></pre>    
         <img src='images/runGrailsCmd.png' />
 
-        <p>Then add the following to the bottom of <b>grails-app → conf → application.groovy</b></p>
+        <p>Then add the following to the bottom of <b>grails-app/conf/application.groovy</b></p>
         <pre><code>grails.plugin.springsecurity.logout.postOnly = false</code></pre>
         <p>This will make logging out simple in the future</p>
 
-        <p>Well we are here, also add the following under <code>grails:</code> at the top.</p>
+        <p>At the top of the application.yml file, under <code>grails:</code> add the setting below:</p>
         <pre><code>resources:
         pattern: '/**'</code></pre>
-        <p>This will help us when we use the webapp folder later in the tutorial</p>
+        <p>This will help us when we use the webapp folder later in the tutorial. Default configuration since Grails 3.2 is to expose all static resources in the <b>src/main/webapp/</b>
+folder as <b>/static/</b>, but we need the service worker javascript file to be at the root of the app, i.e.
+<b>"/"</b>. This configuration will make that happen. More details can be found <a href="http://gangmax.me/blog/2017/02/09/expose-static-resources-in-grails/">here</a>.</p>
 
 
         <br /><hr><br />
 
         <h3>Step 2: Creating Controller and Domain</h3>
-        <p>Before we make any new domains or controllers lets modify the User controller</p>
+        <p>Before we make any new domains or controllers lets modify the User domain</p>
         <p>Add the following after String password. This will hold our users first and last name</p>
         <pre>
             <code>String fname
@@ -227,7 +229,7 @@ String lname</code>
 
         <h3>Step 3: Bootstrapping and Permissions</h3>
         <p>Before we do anything else with the app, we are going to change some permissions and bootstrap (preload) some data into our database</p>
-        <p>To change permissions to certain pages in our app go to <b>grails-app → conf → application.groovy</b></p>
+        <p>To change permissions to certain pages in our app go to <b>grails-app/conf/application.groovy</b></p>
         <p>In the static rules, add the following to the bottom. These permissions will let us have access to the catch controller methods, the service worker, User getLogin method, and access to H2 console.</p>
         <pre>
             <code>grails.plugin.springsecurity.controllerAnnotations.staticRules = [
@@ -243,7 +245,7 @@ String lname</code>
 ]</code>
         </pre>
         <p>And yes, we have not created all of these pages / methods yet. We will get to that soon I promise.</p>
-        <p>Now that the permissions are set let's bootstrap some data! <b>Open up init → fishingapp → BootStrap</b></p>
+        <p>Now that the permissions are set let's bootstrap some data! <b>Open up init/fishingapp/BootStrap</b></p>
         <p>Inside the BootStrap.groovy file everything can be created in the init definition. Add the following to the definition: </p>
         <pre>
             <code>def init = { servletContext →
@@ -287,6 +289,9 @@ String lname</code>
     render Catch.findAllByUser(user).toArray() as JSON
 }</code>
         </pre>
+        <p>
+            At the top of the CatchController file, add  <pre><code>import grails.converters.JSON</code></pre> so that groovy recognizes JSON.
+        </p>
         <p>Let's test this out. Run the grails app 
             <img width=13px src='https://cdn2.iconfinder.com/data/icons/large-glossy-svg-icons/512/go_arrow_next_up_green_forward-512.png' />
             and navigate to <u>http://localhost:8080/login/auth</u>
@@ -330,7 +335,7 @@ String lname</code>
         <p>After you are done, your asset directory should look like this:</p>
         <img src='images/assets.png' />
         <p>Sweet, now that we have all that installed, let us start creating the navigation</p>
-        <p>This will all be done in <b>grails-app → views → layouts → main.gsp</b></p>
+        <p>This will all be done in <b>grails-app/views/layouts/main.gsp</b></p>
         <p>The main.gsp makes a template, that can be used on all pages of our app. Once you open main.gsp, include all the JS and CSS you just added in the header </p>
         <pre>
             <code>&lt;head>
@@ -563,7 +568,7 @@ return false;</code>
         <code>def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)</code>
 
         <p>If an image is passed we need to generate a path name and save the image to the server</p>
-        <p>The image will be saved in <b>src → webapp → Images</b> &nbsp; You will have to create this directory</p>
+        <p>The image will be saved in <b>src/webapp/Images</b> &nbsp; You will have to create this directory</p>
         <p>If you are on a server the path will not use <code>System.getProperty("user.home")</code></p>
         <p>The following code saves the image:</p>
         <pre>
@@ -839,7 +844,7 @@ if (showCatchesDiv.is(":visible")) {
     <p>LocalForage will make it easy to cache items in IndexedDB and if that is not available it will then store it into Local Storage.
        The reason we are using IndexedDB is because it is allowed to store a larger amount than Local Storage. </p>
 
-    <p>First things first, create sw.js in the src → webapp directory.</p>
+    <p>First things first, create sw.js in the src/webapp directory.</p>
     <p>This is actually very simple, we will make listener for service worker install and fetch</p>
     <p>The install can be done as below. This makes a listener for the install then opens the cache for 'fishingApp' and adds all of the pages that need to be saved offline to the cache.</p>
     <pre>
@@ -897,7 +902,7 @@ if (showCatchesDiv.is(":visible")) {
     </pre>
     <p>and if the app isn't online, might as well as hide the show catches button <code>$("#showCatchesButton").hide();</code></p>
 
-    <p>The app is now offline capable! Go ahead and test it - on Google Chrome you can go to View → Developer → Javascript Console</p>
+    <p>The app is now offline capable! Go ahead and test it - on Google Chrome you can go to View/Developer/Javascript Console</p>
     <p>Under the Application tab, you can click 'Service Workers' and check Offline</p>
     <img src='images/jsConsole.png' />
     <br />

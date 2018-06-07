@@ -153,13 +153,13 @@
         </pre>
 
         <p>Now setup Spring Security Core.</p>
-        <p>Open the Grails command prompt by clicking the “Tools” in the menu bar then select “Grails” followed by “Grails Command”. In the widow that pops up enter:</p>
+        <p>Open the Grails command prompt by clicking the "Tools" in the menu bar then select "Grails" followed by "Grails Command". In the widow that pops up enter:</p>
         <pre><code>s2-quickstart fishingapp User Role</code></pre>    
         <img src='images/runGrailsCmd.png' />
 
-        <p>Then add the following to the bottom of <b>grails-app/conf/application.groovy</b></p>
+        <p>Then add the following to the bottom of <b>grails-app/conf/application.groovy</b>:</p>
         <pre><code>grails.plugin.springsecurity.logout.postOnly = false</code></pre>
-        <p>This will make logging out simple in the future</p>
+        <p>This will make logging out simple in the future.</p>
 
         <p>At the top of the application.yml file, under <code>grails:</code> add the setting below:</p>
         <pre><code>resources:
@@ -172,16 +172,16 @@ folder as <b>/static/</b>, but we need the service worker javascript file to be 
         <br /><hr><br />
 
         <h3>Step 2: Creating Controller and Domain</h3>
-        <p>Before we make any new domains or controllers lets modify the User domain</p>
-        <p>Add the following after String password. This will hold our users first and last name</p>
+        <p>Before we make any new domains or controllers, let us modify the User domain.</p>
+        <p>Add the following after String password in the User domain. This will hold our users first and last name.</p>
         <pre>
             <code>String fname
 String lname</code>
         </pre>
 
-        <p>Now let us create a new domain for Catch</p>
+        <p>Now let us create a new domain for Catch.</p>
         <img src='images/newDomain.png' />
-        <p>In our new domain, we shall create variables for the trip name, fish type, comments, x and y coordinates, the date caught, and a path to where we will store our uploaded images</p>
+        <p>In our new domain, we shall create variables for the trip name, fish type, comments, x and y coordinates, the date caught, and a path to where we will store our uploaded images.</p>
         <p>The <b>Catch.groovy</b> domain should look as follows:</p>
         <pre>
             <code>package fishingapp
@@ -209,28 +209,28 @@ String lname</code>
     }</code>
         </pre>
 
-        <p>The Catch domain needs a controller, lets create one</p>
+        <p>The Catch domain needs a controller, let us create one.</p>
         <img src='images/newController.png' />
 
-        <p>We will also need a controller for our User</p>
+        <p>We will also need a controller for our User.</p>
         <img src='images/newControllerUser.png' />
 
 
         <p>Grails uses a 
                 <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC architectural pattern</a>
-                . The controller is where we will be handling all the database transications called from the view
+                . The controller is where we will be handling all the database transications called from the views.
             </p>
             
-        <p>Awesome! These will be our controllers for the application. We will come back to these later to create some methods</p>
+        <p>Awesome! These will be our controllers for the application. We will come back to these later to create some methods.</p>
 
 
 
         <br /><hr><br />
 
         <h3>Step 3: Bootstrapping and Permissions</h3>
-        <p>Before we do anything else with the app, we are going to change some permissions and bootstrap (preload) some data into our database</p>
-        <p>To change permissions to certain pages in our app go to <b>grails-app/conf/application.groovy</b></p>
-        <p>In the static rules, add the following to the bottom. These permissions will let us have access to the catch controller methods, the service worker, User getLogin method, and access to H2 console.</p>
+        <p>Before we do anything else with the app, we are going to change some permissions and bootstrap (preload) some data into our database.</p>
+        <p>To change permissions to certain pages in our app go to <b>grails-app/conf/application.groovy</b>.</p>
+        <p>In the static rules, add the following to the bottom of application.groovy. These permissions will let us have access to the catch controller methods, the service worker, User getLogin method, and access to H2 console.</p>
         <pre>
             <code>grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 
@@ -244,8 +244,8 @@ String lname</code>
     
 ]</code>
         </pre>
-        <p>And yes, we have not created all of these pages / methods yet. We will get to that soon I promise.</p>
-        <p>Now that the permissions are set let's bootstrap some data! <b>Open up init/fishingapp/BootStrap</b></p>
+        <p>And yes, we have not created all of these pages or methods yet. We will get to that soon, I promise.</p>
+        <p>Now that the permissions are set let us bootstrap some data! <b>Open up init/fishingapp/BootStrap</b>.</p>
         <p>Inside the BootStrap.groovy file everything can be created in the init definition. Add the following to the definition: </p>
         <pre>
             <code>def init = { servletContext →
@@ -274,15 +274,15 @@ String lname</code>
 
 }</code>
         </pre>
-        <p>Permissions and Bootstrapping complete! Time for the controller</p>
+        <p>Permissions and Bootstrapping are complete! Time to add the controllers</p>
 
         <br /><hr><br />
 
         <h3>Step 4: Back to the Controller</h3>
         <p>Open back up the Catch controller and put the following inside the CatchController class:</p>
         <pre><code>def springSecurityService</code></pre>
-        <p>This will give us access to spring security services</p>
-        <p>Now create a method called getCatches, we will then use spring security to get the user and return all the catches by the user</p>
+        <p>This injects springSecurityService into the controller and gives us access to spring security services.</p>
+        <p>Now create a method called getCatches, we will then use spring security to get the user and return all the catches by the user:</p>
         <pre>
             <code>def getCatches() {
     User user = springSecurityService.currentUser
@@ -290,18 +290,18 @@ String lname</code>
 }</code>
         </pre>
         <p>
-            At the top of the CatchController file, add  <pre><code>import grails.converters.JSON</code></pre> so that groovy recognizes JSON.
+            At the top of the CatchController file, add:  <pre><code>import grails.converters.JSON</code></pre> so that groovy recognizes JSON.
         </p>
         <p>Let's test this out. Run the grails app 
             <img width=13px src='https://cdn2.iconfinder.com/data/icons/large-glossy-svg-icons/512/go_arrow_next_up_green_forward-512.png' />
             and navigate to <u>http://localhost:8080/login/auth</u>
         </p>
-        <p>Log in with our bootstrapped account <b>username:</b> Jake <b>password:</b> password</p>
-        <p>Now navigate to <u>http://localhost:8080/catch/getCatches</u> this is the controller we just made</p>
-        <p>The website should return something like this</p>
+        <p>Log in with our bootstrapped account (<b>username:</b> Jake <b>password:</b> password).</p>
+        <p>Now navigate to <u>http://localhost:8080/catch/getCatches</u>. This is the controller we just made.</p>
+        <p>The website should return something like this:</p>
         <img src='images/catchesGetCatches.png' />
-        <p>Cool!! Our method works as it should</p>
-        <p>Time to create a method for the <b>User</b> controller to check if the user is logged in, so open up the <b>User</b> controller and create a getLogin method</p>
+        <p>Cool!! Our method works as it should.</p>
+        <p>Time to create a method for the <b>User</b> controller to check if the user is logged in, so open up the <b>User</b> controller and create a getLogin method:</p>
         <pre>
             <code>class UserController {
     def springSecurityService
@@ -320,13 +320,13 @@ String lname</code>
 }</code>
         </pre>
 
-        <p>We can test this method the same as the Catch one by going to the URL <u>http://localhost:8080/user/getLogin</u> it should display "Jake" if you're logged in and "false" if you're not</p>
+        <p>We can test this method the same as the Catch navigating to the URL <u>http://localhost:8080/user/getLogin</u> it should display "Jake" if you're logged in and "false" if you're not.</p>
         <p>Now that we have that setup, let's get to setting up our navbar!</p>
 
         <br /><hr><br />
 
         <h3>Step 5: Main Template, Javascripts, and Styling</h3>
-        <p>Before we get to creating the navigation bar, we need to install bootstrap and localforage</p>
+        <p>Before we get to creating the navigation bar, we need to install bootstrap and localforage.</p>
         <p>Download the 
             <a href="fishingAppFiles.zip" target="_blank">assets</a>,
              this includes bootstrap 3.3.7, localforage, pre-made CSS, and a logo image. Put all these resources in the relative folders of your project.
@@ -334,9 +334,9 @@ String lname</code>
         <p>You will have to delete <b>main.css, grails.css, bootstrap.js, jquery-2.2.0.min.js, and bootstrap.css</b> from your assets first!</p>
         <p>After you are done, your asset directory should look like this:</p>
         <img src='images/assets.png' />
-        <p>Sweet, now that we have all that installed, let us start creating the navigation</p>
-        <p>This will all be done in <b>grails-app/views/layouts/main.gsp</b></p>
-        <p>The main.gsp makes a template, that can be used on all pages of our app. Once you open main.gsp, include all the JS and CSS you just added in the header </p>
+        <p>Sweet, now that we have all that installed, let us start creating the navigation.</p>
+        <p>This will all be done in <b>grails-app/views/layouts/main.gsp</b>.</p>
+        <p>The main.gsp makes a template, that can be used on all pages of our app. Once you open main.gsp, include all the JS and CSS you just added in the header: </p>
         <pre>
             <code>&lt;head>
     ...
@@ -353,8 +353,8 @@ String lname</code>
 &lt;/head></code>
         </pre>
 
-        <p>Delete the div with the class "navbar navbar-default navbar-static-top"</p>
-        <p>In its place we will put the login modal (a simple boilerplate modal I made a long time ago)</p>
+        <p>Delete the div with the class "navbar navbar-default navbar-static-top".</p>
+        <p>In its place, we will put the login modal (a simple boilerplate modal I made a long time ago):</p>
         <pre>
             <code>%{--Login DIV--}%
 &lt;div class="modal fade" id="login" role="dialog">
@@ -394,25 +394,25 @@ String lname</code>
             </code>
         </pre>
 
-        <p>We will make the login modal alive using javascript, main.gsp uses application.js by default so open that up under javascripts asset</p>
-        <p>First include a no conflict for jQuery, it seems to be interfering with the modals</p>
+        <p>We will make the login modal alive using javascript. The main.gsp uses application.js by default, so open that up under javascripts asset.</p>
+        <p>First include a no conflict for jQuery, it seems to be interfering with the modals:</p>
         <code>jQuery.noConflict(); // for use with modals</code>
-        <p>Then we will add a listener for the login anchor to open the login modal</p>
+        <p>Then we will add a listener for the login anchor to open the login modal:</p>
         <pre>
             <code>// listener for login anchor
 $('#loginBtn').click(function() {
     $("#login").modal();
 });</code>
         </pre>
-        <p>Go ahead and test out the login! Remember you can go to <u>http://localhost:8080/user/getLogin</u> to see if it worked.</p>
-        <p>Time to finish up the nav bar, once we log in we want to switch that login button to logout. We also want to let the user know if they are in offline mode.</p>
-        <p>To do this let's create a function called getLogin() in the application.js</p>
-        <p>In the function we need to handle if the user is online or offline, to do this create a conditional statement using 
+        <p>Go ahead and test out the login! Remember you can go to <u>http://localhost:8080/user/getLogin</u> to see if it works.</p>
+        <p>Time to finish up the nav bar, once we log in we would like the login button to switch to a logout button. We also want to let the user know if they are in offline mode.</p>
+        <p>To do this let's create a function called getLogin() in the application.js.</p>
+        <p>This function needs to handle if the user is online or offline. To do this create a conditional statement using
             <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator">navigator.onLine</a>
-            <code>if (navigator.onLine) { ... } else { ... }</code></pre>
+            <code>if (navigator.onLine) { ... } else { ... }</code></pre>.
         </p>
-        <p>Remeber that method we made earlier in the User controller? Time to use it</p>
-        <p>If the user is online we will want to switch the login button to logout. The user can logout by going to http://localhost:8080/logout</p>
+        <p>Remeber the getLogin method that we made earlier in the User controller? Time to use it.</p>
+        <p>If the user is online we will want to switch the login button to logout. The user can logout by going to http://localhost:8080/logout.</p>
         <pre>
             <code>// call method getLogin in user
 $.get("user/getLogin", function (firstName) {
@@ -440,7 +440,7 @@ $.get("user/getLogin", function (firstName) {
     }
 });</code>
         </pre>
-        <p>The getLogin method returns false if the user is not logged in, else we will display the users firstname by recreating the navbar</p>
+        <p>The getLogin method returns false if the user is not logged in, else it should display the users firstname by recreating the navbar.</p>
         <p>We will also want to display if the user is in offline mode. This is simply remaking the navbar HTML. Place the following code into the else statement:</p>
         <pre>
             <code>            $("#navContainer").html(
@@ -455,19 +455,19 @@ $.get("user/getLogin", function (firstName) {
 return false;</code>
         </pre>
         <p>Now the navigation bar is finished!</p>
-        <p>You can now test and see that the login button is now effective! Unfortuntly you will not be able to test the offline part yet</p>
+        <p>You can now test and see that the login button is now effective! Unfortunately, you will not be able to test the offline part yet.</p>
     
         <br /><hr><br />
 
         <h3>Step 6: index.gsp</h3>
-        <p>Go ahead and open up the index.gsp, this is where all the HTML for the app will be done</p>
-        <p>For simplicity sake, we will just be using
-            <a href="https://getbootstrap.com/docs/4.0/components/modal/">Bootstrap Modals</a>
-            , however this app would be possible with multiple pages
+        <p>Go ahead and open up the index.gsp, this is where all the HTML for the app will be done.</p>
+        <p>For simplicity sake, we will just use
+            <a href="https://getbootstrap.com/docs/4.0/components/modal/">Bootstrap Modals</a>,
+            however this app would be possible with multiple pages.
         </p>
-        <p>To start just delete everything currently in between the body tag of the HTML</p>
-        <p>Now place our styling in between the head tag <code>&lt;asset:stylesheet src="index.css" /></code></p>
-        <p>There will need to be a div for the catch queue and a div for saved catches, there also need a button for the new catch modal and to display the saved catches</p>
+        <p>To start just delete everything currently in between the body tag in index.gsp.</p>
+        <p>Now place our styling in between the head tag <code>&lt;asset:stylesheet src="index.css" /></code>.</p>
+        <p>There will need to be a div for the catch queue and a div for saved catches. Also, the page needs a button for the new catch modal and to display the saved catches.</p>
         <p>This will cover everything:</p>
         <pre>
             <code>&lt;div id="container">
@@ -484,7 +484,7 @@ return false;</code>
 &lt;/div></code>
         </pre>
 
-        <p>Now for the new catch modal, just place this under the container</p>
+        <p>Now for the new catch modal, just place this under the container:</p>
         <pre>
             <code>%{-- New Catch Modal--}%
 &lt;div class="modal fade" id="newCatch" role="dialog">
@@ -521,7 +521,7 @@ return false;</code>
 &lt;/div></code>
         </pre>
 
-        <p>There also needs to be a modal for when a user edits a catch (yes we are going that far)</p>
+        <p>There also needs to be a modal for when a user edits a catch (yes we are going that far):</p>
         <pre>
             <code>%{-- catchDetail Modal --}%
 &lt;div class="modal fade" id="catchDetail" role="dialog">
@@ -532,8 +532,8 @@ return false;</code>
 &lt;/div></code>
         </pre>
 
-        <p>Last but not least! Including <b>index.js</b> in the index.gsp</p>
-        <p>To do this, put the following at the bottom of the index.gsp (after the closing html tag)</p>
+        <p>Last but not least! The JS file <b>index.js</b> needs to be included in the index.gsp.</p>
+        <p>To do this, put the following at the bottom of the index.gsp (after the closing html tag):</p>
         <pre>
             <code>&lt;content tag="footScripts">
     &lt;asset:javascript src="index.js"/>
@@ -546,8 +546,8 @@ return false;</code>
         <br /><hr><br />
 
         <h3>Step 7: Finishing the Catch Controller</h3>
-        <p>Open the CatchController.groovy back up. We already implemented a getCatches() method. We also need a method for saving new catches, saving edited catches, and showing the details of a catch</p>
-        <p>First up: saving catches. Create a newCatch method <code>def newCatch()</code></p>
+        <p>Open again the CatchController.groovy. We already implemented a getCatches() method. We also need a method for saving new catches, saving edited catches, and showing the details of a catch.</p>
+        <p>First up: saving catches. Create a newCatch method <code>def newCatch()</code>.</p>
         <p>Remember we need to save the following:</p>
         <ul>
             <li>User</li>
@@ -559,17 +559,17 @@ return false;</code>
             <li>Comment</li>
             <li>Image path</li>            
         </ul>
-        <p>An image will also need to be saved on the server</p>
+        <p>An image will also need to be saved on the server.</p>
 
-        <p>In the method we can get the user by making a variable and using spring security service</p>
+        <p>In the method, we can get the user by making a variable and using spring security service:</p>
         <code>User user = springSecurityService.currentUser</code>
 
         <p>Grails handles saving dates very strictly, we must parse the input</p>
         <code>def dateCaughtModified = new Date().parse("yyyy-MM-dd", params.dateCaught)</code>
 
-        <p>If an image is passed we need to generate a path name and save the image to the server</p>
-        <p>The image will be saved in <b>src/webapp/Images</b> &nbsp; You will have to create this directory</p>
-        <p>If you are on a server the path will not use <code>System.getProperty("user.home")</code></p>
+        <p>If an image is passed we need to generate a path name and save the image to the server.</p>
+        <p>The image will be saved in <b>src/webapp/Images</b> &nbsp; You will have to create this directory.</p>
+        <p>If you are on a server, the path will not use <code>System.getProperty("user.home")</code>.</p>
         <p>The following code saves the image:</p>
         <pre>
             <code>def destFilename
@@ -595,7 +595,7 @@ if (imageUpload != null && imageUpload != "null") {
     destFilename = null
 }</code>
         </pre>
-        <p>Make sure that you modify <code>"/[YOUR PATH HERE]/FishingApp/src/main/webapp/Images"</code> to where you have the app saved</p>
+        <p>Make sure that you modify <code>"/[YOUR PATH HERE]/FishingApp/src/main/webapp/Images"</code> to where you have the app saved.</p>
         <p>Time to save it all!</p>
         <pre>
             <code>def fishCatch = new Catch(
@@ -613,9 +613,9 @@ fishCatch.save(flush: true, failOnError: true)
 render "OH YES OH YES"</code>
         </pre>
 
-        <p><a href="http://www.carlcox.com/">Awesome!</a> Now we can save catches</p>
+        <p><a href="http://www.carlcox.com/">Awesome!</a> Now we can save catches.</p>
 
-        <p>Next, make a method <b>editCatch()</b> to save any edited catches</p>
+        <p>Next, make a method <b>editCatch()</b> to save any edited catches.</p>
         <p>It is basically the same thing as <b>newCatch()</b> except it is getting a catch to overwrite:</p>
         <pre>
             <code>// updates the catch in the database
@@ -665,18 +665,18 @@ def editCatch() {
     render Catch.findAllById(params.catchID).toArray() as JSON
 }</code>
         </pre>
-        <p>This returns a JSON of all the domain variables of the catch from it's ID</p>
+        <p>This returns a JSON of all the domain variables of the catch from it's ID.</p>
         <p><b>Congrats!</b> The controller is complete, can't wait to test it!</p>
 
         <br /><hr><br />
 
         <h3>Step 8: Starting index.js</h3>
-        <p>Go ahead and create new file index.js in the javascripts assets</p>
+        <p>Go ahead and create new file index.js in the javascripts assets:</p>
         <img src='images/newIndexJS.png' />
-        <p>We are going to be making a lot of functions here. This is where most of the action is going on.</p>
-        <p>First lets create a button listener and function so we can display all of the users catches</p>
-        <p>Whenever we make any listeners, make sure to put them in the <code>$(document).ready(function() { ... }</code> function</p>
-        <p>This will always allow the javascript to find the IDs on the page after it loads</p>
+        <p>We will make a lot of functions here. This is where most of the action is going on.</p>
+        <p>First let's create a button listener and function so we can display all of the users catches.</p>
+        <p>Whenever we make any listeners, make sure to put them in the <code>$(document).ready(function() { ... }</code> function.</p>
+        <p>This will always allow the javascript to find the IDs on the page after it loads.</p>
         <p>To create a listener for a button in jquery do the following:</p>
         <pre>
 <code>$('#showCatchesButton').click(function() {
@@ -684,7 +684,7 @@ def editCatch() {
 }</code>
         </pre>
         <p>Get the div with ID "showCatches" and check if it is visible, if it is hide it. If not check if there is data 
-            in the table so we don't make any unessessary calls to the server. If not lets get the catches!</p>
+            in the table so we don't make any unnecessary calls to the server. If not, get the catches!</p>
         <pre>
 <code>// get show catch div
 var showCatchesDiv = $('#showCatches');
@@ -700,9 +700,9 @@ if (showCatchesDiv.is(":visible")) {
 // call to the controller Catch, method getCatches
 } else { ... </code>
         </pre>
-        <p>Remember that controller we made earlier? getCatches - Yeah that one. We can make an ajax call using </p>
+        <p>Remember that controller we made earlier? getCatches - Yeah that one. We can use it to make an ajax call:</p>
         <code>$.getJSON("catch/getCatches", function (data) { ...</code>
-        <p>This returns a JSON inside the data variable and if it has any length we know it has data and we can easily extract it and put it to use</p>
+        <p>This returns a JSON inside the data variable. If it has length we know it has data, so we can easily extract it and put it to use.</p>
         <pre>
 <code>
         var catches = [];
@@ -744,9 +744,9 @@ if (showCatchesDiv.is(":visible")) {
     });
 }</code>
         </pre>
-        <p>See the showCatchDetail function in <code>&lt;tr id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>&lt;/tr></code> ??</p>
-        <p>Lets implement that now, all it needs to do is make another ajax call to the getCatch method in the controller and with its return data put it in the display trip modal</p>
-        <p>Remember this isn't a listener so we can put it above the document ready function</p>
+        <p>See the showCatchDetail function in <code>&lt;tr id='catch_" + val.id + "' onclick='showCatchDetail(" + val.id + ")'>&lt;/tr></code> ?</p>
+        <p>Let us implement that now. Only need another ajax call to the getCatch method in the controller and with its return data put it in the display trip modal.</p>
+        <p>Note this isn't a listener, so we can put it above the document ready function.</p>
         <pre>
 <code>function showCatchDetail(index) {
 
@@ -783,9 +783,9 @@ if (showCatchesDiv.is(":visible")) {
     
     <p>Go ahead and test it!</p>
     <img src='images/catchDetailFunction.png' />
-    <p>The reason for no image is because we put a pseduo link in the bootstrap</p>
-    <p>See the edit button at the top right? We might as well as finish this</p>
-    <p>Make a function editCatch() that is just going to extract everything from the modal then put it in textboxs</p>
+    <p>The reason for there not being an image is because we put a pseudo link in the bootstrap.</p>
+    <p>See the edit button at the top right? We might as well as finish this.</p>
+    <p>Make a function editCatch() that is just going to extract everything from the modal and then put it in textboxs.</p>
     <pre>
 <code>function editCatch() {
     var tripName = $("#tripNameModal").text();
@@ -827,25 +827,25 @@ if (showCatchesDiv.is(":visible")) {
 }</code>
     </pre>
 
-    <p>This of course doesn't work yet - we need the submitEditCatch function. But lets wait to make the submit new catch function fist!</p>
-    <p>But before we get to that - this is an offline app. We need to get the app ready for offline implementation fist</p>
+    <p>This of course doesn't work yet - we need the submitEditCatch function. But let us wait to make the submit new catch function fist!</p>
+    <p>But before we get to that - this is an offline app. We need to get the app ready for offline implementation first.</p>
 
 
     <br /><hr><br />
 
     <h3>Step 9: Making the App Offline</h3>
-    <p>Implementing the webapp offline is not that difficult to do. To do this we will be caching the app to the users device using service workers.
+    <p>Implementing the webapp offline is not that difficult to do. To do this we will cache the app to the users device using service workers.
         All the data will be store in IndexedDB using localForage.</p>
     <p>More detailed guides: 
         <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">service workers</a> and 
-        <a href="https://localforage.github.io/localForage/">localForage</a>
+        <a href="https://localforage.github.io/localForage/">localForage</a>.
     </p>
 
-    <p>LocalForage will make it easy to cache items in IndexedDB and if that is not available it will then store it into Local Storage.
-       The reason we are using IndexedDB is because it is allowed to store a larger amount than Local Storage. </p>
+    <p>LocalForage will make it easy to cache items in IndexedDB. If IndexedDB is not available, it will store it into Local Storage.
+       The reason we are using IndexedDB is because it can store a larger amount than Local Storage. </p>
 
     <p>First things first, create sw.js in the src/webapp directory.</p>
-    <p>This is actually very simple, we will make listener for service worker install and fetch</p>
+    <p>This is actually very simple, we will make listener for service worker install and fetch.</p>
     <p>The install can be done as below. This makes a listener for the install then opens the cache for 'fishingApp' and adds all of the pages that need to be saved offline to the cache.</p>
     <pre>
 <code>self.addEventListener('install', function (event) {
@@ -876,9 +876,9 @@ if (showCatchesDiv.is(":visible")) {
     });</code>
     </pre>
 
-    <p>The links are slightly differnt than what you would expect because grails compiles the code like this. It also adds the <code>?compile=false</code> to the end of all the assets.</p>
+    <p>The links are slightly different than what you would expect because grails compiles the code like this. It also adds the <code>?compile=false</code> to the end of all the assets.</p>
 
-    <p>Next the fetch, which comes from <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">Google Developers</a></p>
+    <p>Next the fetch (the code is from <a href="https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker">Google Developers</a>):</p>
     <pre>
 <code>self.addEventListener('fetch', function(event) {
     event.respondWith(
@@ -889,10 +889,10 @@ if (showCatchesDiv.is(":visible")) {
 });</code>
     </pre>
 
-    <p>Lastly, we need to register the service worker! Navigate back to index.js</p>
-    <p>In the document ready function let's first check if the app is online and if it is register the service worker</p>
-    <p>To check if the app is online use: <code>if (navigator.onLine) { ... }</code></p>
-    <p>Then to register the service worker (after checking if it is supported)</p>
+    <p>Lastly, we need to register the service worker! Open index.js again.</p>
+    <p>In the document ready function, let's first check if the app is online and if it is register the service worker.</p>
+    <p>To check if the app is online use: <code>if (navigator.onLine) { ... }</code>.</p>
+    <p>Then to register the service worker (after checking if it is supported):</p>
     <pre>
         <code>if ('serviceWorker' in navigator) {
     navigator.serviceWorker
@@ -900,10 +900,10 @@ if (showCatchesDiv.is(":visible")) {
         .then(function() { console.log("Service Worker Registered"); });
 }</code>
     </pre>
-    <p>and if the app isn't online, might as well as hide the show catches button <code>$("#showCatchesButton").hide();</code></p>
+    <p>If the app isn't online, might as well as hide the show catches button <code>$("#showCatchesButton").hide();</code>.</p>
 
-    <p>The app is now offline capable! Go ahead and test it - on Google Chrome you can go to View/Developer/Javascript Console</p>
-    <p>Under the Application tab, you can click 'Service Workers' and check Offline</p>
+    <p>The app is now offline capable! Go ahead and test it - on Google Chrome you can go to View/Developer/Javascript Console.</p>
+    <p>Under the Application tab, you can click 'Service Workers' and check Offline.</p>
     <img src='images/jsConsole.png' />
     <br />
     <img src='images/offlineMode.png' />
@@ -912,22 +912,22 @@ if (showCatchesDiv.is(":visible")) {
     <br /><hr><br />
 
     <h3>Step 10: Saving to the Database</h3>
-    <p>Time to save the catches to the database! We will be using the controller newCatch method to save everything</p>
-    <p>In <b>index.js</b> let's first make an event listener for our new catch button to open the modal we made earlier </p>
+    <p>Time to save the catches to the database! We will use the controller newCatch method to save everything.</p>
+    <p>In <b>index.js</b>, let's first make an event listener for our new catch button to open the modal we made earlier: </p>
     <pre>
         <code>$('#newCatchButton').click(function() {
     $("#newCatch").modal();
 });</code>
     </pre>
 
-    <p>and a listener to close the modal</p>
+    <p>And we add a listener to close the modal:</p>
     <pre>
 <code>$('#closeNewCatch').click(function() {
     $("#newCatch").modal('toggle');
 });</code>
         </pre>
 
-    <p>Now time to make the listner when the catch is submited - we will extract the data from the form then send it to the controller or save it to the users cache with localforage</p>
+    <p>Now time to make the listner when the catch is submited - we will extract the data from the form and then send it to the controller or save it to the users cache with localforage:</p>
     <pre>
 <code>$('#submitNewCatch').click(function() {
 
@@ -940,7 +940,7 @@ if (showCatchesDiv.is(":visible")) {
     var imageUpload = $('#image')[0].files[0];</code>
     </pre>
 
-    <p>Let's do some quick user validation before we do anything</p>
+    <p>Let's do some quick user validation before we do anything else:</p>
     <pre>
     <code>    if (dateCaught.val() === "") {
         dateCaught.css("border", "1px solid red");
@@ -957,10 +957,10 @@ if (showCatchesDiv.is(":visible")) {
     }</code>
     </pre>
 
-    <p>We are then going to check if the user is online and logged in</p>
+    <p>We then check if the user is online and logged in:</p>
     <code>if (navigator.onLine && $("#loginBtn").text() !== "Login") { ... }</code>
     
-    <p>If it is, we are going to put everything in a jform</p>
+    <p>If the user is login, we are going to put everything in jForm, a FormData object:</p>
     <pre>
 <code>    var jForm = new FormData();
 
@@ -1000,7 +1000,7 @@ if (showCatchesDiv.is(":visible")) {
     });</code>
     </pre>
 
-    <p>If you try to upload any images you will notice that grails says the upload size is too large. We must change the max upload size.</p>
+    <p>If you try to upload any images, you will notice that grails says the upload size is too large. We must change the max upload size.</p>
     <p>Open up the <b>application.yml</b> and put the following under the <code>controllers:</code></p>
     <pre>
 <code>upload:
@@ -1009,12 +1009,12 @@ if (showCatchesDiv.is(":visible")) {
     </pre>
     <p>Rerun the app and you will now be able to uplaod larger images!</p>
 
-    <p>Now it is time to handle if the user is not online, we will save to the user cache using localForage </p>
-    <p>To do this we will be storing the data in an array of dictonaries with the photo being stored as a blob in key value pair orientation</p>
-    <p>First things first, lets check if the user is attempting to upload an image with their catch</p>
+    <p>Now it is time to handle if the user is not online, we will save to the user cache using localForage. </p>
+    <p>To do this, we will store the data in an array of dictionaries with the photo being stored as a blob as a key value pair.</p>
+    <p>First things first, lets check if the user is attempting to upload an image with their catch:</p>
     <code>if (imageUpload !== undefined) {</code>
-    <p>And if they are we will use a <a href='https://developer.mozilla.org/en-US/docs/Web/API/FileReader'>FileReader</a> to convert the image to a blob</p>
-    <p>Then generate a photoID to use a key</p>
+    <p>And if they are, we will use a <a href='https://developer.mozilla.org/en-US/docs/Web/API/FileReader'>FileReader</a> to convert the image to a blob.</p>
+    <p>Then generate a photoID to use a key:</p>
     <pre>
 <code>if (imageUpload !== undefined) {
     // for converting image to blob string setup
@@ -1025,7 +1025,7 @@ if (showCatchesDiv.is(":visible")) {
 }</code>
     </pre>
 
-    <p>The function for generateGUID will need to be added to the top of index.js</p>
+    <p>The function for generateGUID should be added to the top of index.js:</p>
     <pre>
 <code>// Use with generateGUID function to make random int
 function genString() {
@@ -1038,9 +1038,9 @@ function generateGUID() {
 }</code>
     </pre>
 
-    <p>Next we will need to put everything in the localforage, which is done by first setting the driver - which is IndexedDB</p>
+    <p>Next we will need to put everything in the localforage, which is done by first setting the driver - which is IndexedDB:</p>
     <code>localforage.setDriver(localforage.INDEXEDDB).then(function() { ...</code>
-    <p>Then put all of the data in a dictonary</p>
+    <p>Then put all of the data in a dictionary:</p>
     <pre>
 <code>var catchData = {
     tripName: tripName.val(),
@@ -1052,7 +1052,7 @@ function generateGUID() {
 };</code>
     </pre>
 
-    <p>If there is an image, store it as it's own key value pair or make it null in our dictonary</p>
+    <p>If there is an image, store it as its own key value pair or make it null in our dictionary:</p>
     <pre>
 <code>if (imageUpload !== undefined) {
     catchData.photoID = photoID;    // put it in the dictionary
@@ -1068,8 +1068,8 @@ function generateGUID() {
 }</code>
     </pre>
     
-    <p>Now let's store the catch in the localForage, to do this check if there is already an array in the localForage
-        and if there is, duplicate and push the new data to the array
+    <p>Now let's store the catch into localForage. To do this check if there is already an array in the localForage
+        and if there is, duplicate and push the new data to the array:
     </p>
 
     <pre>
@@ -1155,8 +1155,8 @@ function generateGUID() {
     <br /><hr><br />
 
     <h3>Step 11: Finishing the queue</h3>
-    <p>Now that we have the data at least saving to the queue if the user is offline/not logged in. Lets test that out by showing the queue in the div we made earlier</p>
-    <p>In the document ready function we will want to check if anything is in the localforage and if it is, put it in the queue</p>
+    <p>Now that we have the data at least saving to the queue for upload if the user is offline or not logged in. Let us test that out by showing the queue in the div we made earlier.</p>
+    <p>In the document ready function, we check if anything is in the localforage and if it is, put it in the queue:</p>
     <pre>
 <code>localforage.setDriver(localforage.INDEXEDDB).then(function() {
 
@@ -1177,10 +1177,10 @@ function generateGUID() {
 
     <p>Go ahead and test it to make sure that the queue works, you will have to either be logged out or offline to test this!</p>
     
-    <p>Time to now save the queue when a user is logged in</p>
-    <p>Go ahead a create a function for submitQueue()</p>
+    <p>Time to now save the queue when a user is logged in:</p>
+    <p>Go ahead a create a function for submitQueue().</p>
     <p>This checks if the user is logged in and online, then proceeds to go through each item in a queue - but we must send each catch to another 
-        function to avoid race conditions when accessing the localForage for the image blob</p>
+        function, <code>submitQueueHelper(...)</code>, to avoid race conditions when accessing the localForage for the image blob</p>
         <pre>
 <code>function submitQueue() {
 
@@ -1218,8 +1218,8 @@ function generateGUID() {
 }</code>
     </pre>
 
-    <p>The submitQueueHelper function is almost identical to saving a new catch function</p>
-    <p>The differnce is that we must handle if a user has an image or not differntly and convert the blob text back to something grails can use</p>
+    <p>The submitQueueHelper function is almost identical to saving a new catch function.</p>
+    <p>The difference is that we must handle if a user has an image or not differently and convert the blob text back to something grails can interpret:</p>
 
     <pre>
 <code>function submitQueueHelper(value) {
@@ -1289,7 +1289,7 @@ function generateGUID() {
 }</code>
     </pre>
 
-    <p>The convert b64toBlob function (from <a href='https://ourcodeworld.com/'>OurCodeWorld.com</a></p>
+    <p>The convert b64toBlob function (from <a href='https://ourcodeworld.com/'>OurCodeWorld.com</a>)</p>
     <pre>
 <code>// Converts blob string to a blob file
 // Taken from https://ourcodeworld.com/
@@ -1323,8 +1323,8 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 
     <h3>Extras</h3>
     <p>The extent that this tutorial takes the app is basically done!</p>
-    <p>A little extra though</p>
-    <p>This function automatically gets the users location and puts it in the appropriate fields</p>
+    <p>A little extra though.</p>
+    <p>This function automatically gets the users location and puts it in the appropriate fields:</p>
     <pre>
 <code>// Finds location using navigator and sets the values for newCatch
 function geoFindMe() {
@@ -1351,10 +1351,10 @@ function geoFindMe() {
 }</code>
     </pre>
 
-    <p>Then call <code>geoFindMe()</code> in the document ready function</p>
+    <p>Then call <code>geoFindMe()</code> in the document ready function.</p>
 
     <br />
-    <p>Also a cool way to display image preview for the user when they upload an image (from <a href='html5rocks.com'>HTML5 Rocks!</a>)</p>
+    <p>Also a cool way to display image preview for the user when they upload an image (from <a href='html5rocks.com'>HTML5 Rocks!</a>):</p>
     <pre>
 <code>// Displays thumbnail of selected image in the imageDiv
 // this function is from HTML5 rocks!
